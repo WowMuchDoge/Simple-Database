@@ -18,7 +18,9 @@ class ColumnHead {
 
         void* reallocate(size_t oldCapacity, size_t newCapacity, T* elements) {
             if (newCapacity > 0) {
-                return realloc(elements, newCapacity);
+                void* result = realloc(elements, newCapacity);
+                if (result == NULL) exit(1);
+                return result;
             }
 
             free(elements);
@@ -46,6 +48,11 @@ class ColumnHead {
         }
 
         void insertElement(T val, int index) {
+
+            int oldCapacity = elementsCapacity;
+            elementsCapacity = GROW_CAPACITY(elementsCapacity);
+            elements = GROW_ARRAY(T, oldCapacity, elementsCapacity, elements);
+
             if (index >= count || index < 0) exit(1);
 
             for (int i = count; i > index; i--) {
@@ -57,11 +64,20 @@ class ColumnHead {
             count++;
         }
 
+        void clearColumn() {
+            free(elements);
+            count = 0;
+            elementsCapacity = 0;
+            elements = NULL;
+        }
+
         void popElement() {
             elements[--count] = NULL;
         }
 
         T getElement(int index) {
+            if (index >= count) exit(1);
+
             return elements[index];
         }
 };
