@@ -39,6 +39,28 @@ class ColumnHead {
             count++;
         }
 
+        void editElement(T val, int index) {
+            if (index >= count) exit(1);
+
+            elements[index] = val;
+        }
+
+        void insertElement(T val, int index) {
+            if (index >= count || index < 0) exit(1);
+
+            for (int i = count; i > index; i--) {
+                elements[i] = elements[i - 1];
+            }
+
+            elements[index] = val;
+
+            count++;
+        }
+
+        void popElement() {
+            elements[--count] = NULL;
+        }
+
         T getElement(int index) {
             return elements[index];
         }
