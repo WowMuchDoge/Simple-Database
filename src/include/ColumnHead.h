@@ -2,11 +2,18 @@
 
 #include <iostream>
 
+#include "ColumnType.h"
+
 #define GROW_ARRAY(type, oldCapacity, newCapacity, elements) \
     (type*)reallocate(oldCapacity * sizeof(type), newCapacity * sizeof(type), elements)
 
 #define GROW_CAPACITY(capacity) \
-    (capacity < 4 ? 4 : (capacity) * 2) 
+    (capacity < 4 ? 4 : (capacity) * 2)
+
+typedef struct {
+    void* arr;
+    int count;
+} ColumnInfo;
 
 template<class T>
 class ColumnHead {
@@ -15,6 +22,8 @@ class ColumnHead {
         int elementsCapacity;
         int count;
         ColumnHead* next;
+
+        std::string name;
 
         void* reallocate(size_t oldCapacity, size_t newCapacity, T* elements) {
             if (newCapacity > 0) {
@@ -28,7 +37,7 @@ class ColumnHead {
         }
 
     public:
-        ColumnHead() : next(NULL), elements(NULL), elementsCapacity(0), count(0) {}
+        ColumnHead(std::string nm) : next(NULL), elements(NULL), elementsCapacity(0), count(0), name(nm) {}
 
         void addElement(T element) {
             if (elementsCapacity < count + 1) {
@@ -79,5 +88,24 @@ class ColumnHead {
             if (index >= count) exit(1);
 
             return elements[index];
+        }
+
+        ColumnInfo getArray() {
+            ColumnInfo info;
+            info.arr = elements;
+            info.count = count;
+            return info;
+        }
+
+        void setPointer(ColumnHead* col) {
+            next = col;
+        }
+
+        ColumnHead* getPointer(ColumnHead* col) {
+            return next;
+        }
+
+        std::string getTypeName() {
+            return typeid(T).name();
         }
 };
