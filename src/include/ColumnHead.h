@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "ColumnType.h"
+
 #define GROW_ARRAY(type, oldCapacity, newCapacity, elements) \
     (type*)reallocate(oldCapacity * sizeof(type), newCapacity * sizeof(type), elements)
 
@@ -21,6 +23,8 @@ class ColumnHead {
         int count;
         ColumnHead* next;
 
+        std::string name;
+
         void* reallocate(size_t oldCapacity, size_t newCapacity, T* elements) {
             if (newCapacity > 0) {
                 void* result = realloc(elements, newCapacity);
@@ -33,7 +37,7 @@ class ColumnHead {
         }
 
     public:
-        ColumnHead() : next(NULL), elements(NULL), elementsCapacity(0), count(0) {}
+        ColumnHead(std::string nm) : next(NULL), elements(NULL), elementsCapacity(0), count(0), name(nm) {}
 
         void addElement(T element) {
             if (elementsCapacity < count + 1) {
@@ -99,5 +103,9 @@ class ColumnHead {
 
         ColumnHead* getPointer(ColumnHead* col) {
             return next;
+        }
+
+        std::string getTypeName() {
+            return typeid(T).name();
         }
 };
