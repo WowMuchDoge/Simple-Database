@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-#include "ColumnType.h"
 #include "BaseColumn.h"
 
 #define GROW_ARRAY(type, oldCapacity, newCapacity, elements) \
