@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "ColumnType.h"
+#include "BaseColumn.h"
 
 #define GROW_ARRAY(type, oldCapacity, newCapacity, elements) \
     (type*)reallocate(oldCapacity * sizeof(type), newCapacity * sizeof(type), elements)
@@ -16,12 +17,12 @@ typedef struct {
 } ColumnInfo;
 
 template<class T>
-class ColumnHead {
+class ColumnHead : public BaseColumn {
     private:
         T* elements;
         int elementsCapacity;
         int count;
-        ColumnHead* next;
+        BaseColumn* next;
 
         std::string name;
 
@@ -97,7 +98,7 @@ class ColumnHead {
             return info;
         }
 
-        void setPointer(ColumnHead* col) {
+        void setPointer(BaseColumn* col) {
             next = col;
         }
 
@@ -105,7 +106,7 @@ class ColumnHead {
             return next;
         }
 
-        std::string getTypeName() {
+        std::string getTypeName() const {
             return typeid(T).name();
         }
 };
