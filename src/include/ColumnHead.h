@@ -10,11 +10,6 @@
 #define GROW_CAPACITY(capacity) \
     (capacity < 4 ? 4 : (capacity) * 2)
 
-typedef struct {
-    void* arr;
-    int count;
-} ColumnInfo;
-
 template<class T>
 class ColumnHead : public BaseColumn {
     private:
@@ -39,24 +34,24 @@ class ColumnHead : public BaseColumn {
     public:
         ColumnHead(std::string nm) : next(NULL), elements(NULL), elementsCapacity(0), count(0), name(nm) {}
 
-        void addElement(T element) {
+        void addElement(void* element) {
             if (elementsCapacity < count + 1) {
                 int oldCapacity = elementsCapacity;
                 elementsCapacity = GROW_CAPACITY(elementsCapacity);
                 elements = GROW_ARRAY(T, oldCapacity, elementsCapacity, elements);
             }
 
-            elements[count] = element;
+            elements[count] = ((T)element);
             count++;
         }
 
-        void editElement(T val, int index) {
+        void editElement(void* val, int index) {
             if (index >= count) exit(1);
 
-            elements[index] = val;
+            elements[index] = (T)val;
         }
 
-        void insertElement(T val, int index) {
+        void insertElement(void* val, int index) {
 
             int oldCapacity = elementsCapacity;
             elementsCapacity = GROW_CAPACITY(elementsCapacity);
@@ -68,7 +63,7 @@ class ColumnHead : public BaseColumn {
                 elements[i] = elements[i - 1];
             }
 
-            elements[index] = val;
+            elements[index] = T(val);
 
             count++;
         }
@@ -84,10 +79,10 @@ class ColumnHead : public BaseColumn {
             elements[--count] = NULL;
         }
 
-        T getElement(int index) {
+        void* getElement(int index) {
             if (index >= count) exit(1);
 
-            return elements[index];
+            return (void*)elements[index];
         }
 
         ColumnInfo getArray() {
