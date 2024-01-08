@@ -101,7 +101,7 @@ class ColumnHead : public BaseColumn {
             next = col;
         }
 
-        ColumnHead* getPointer(ColumnHead* col) {
+        BaseColumn* getPointer() {
             return next;
         }
 
