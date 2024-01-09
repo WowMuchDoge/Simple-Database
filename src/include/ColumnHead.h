@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 #include "BaseColumn.h"
 
@@ -23,14 +24,14 @@ class ColumnHead : public BaseColumn {
         }
 
     public:
-        ColumnHead(std::string nm) : next(NULL), elements(NULL), elementsCapacity(0), count(0), name(nm) {}
+        ColumnHead(std::string nm) : name(nm) {}
 
         void addElement(T element) {
             elements.push_back(element);
         }
 
         void editElement(T val, int index) {
-            if (index >= count) exit(1);
+            if (index >= elements.size()) exit(1);
 
             elements[index] = val;
         }
@@ -44,13 +45,17 @@ class ColumnHead : public BaseColumn {
         }
 
         void popElement() {
-            elements[--count] = NULL;
+            elements.pop_back();
         }
 
         T getElement(int index) {
-            if (index >= count) exit(1);
+            if (index >= elements.size()) exit(1);
 
             return elements[index];
+        }
+
+        std::vector<T> getElements() {
+            return elements;
         }
 
         std::string getTypeName() const {

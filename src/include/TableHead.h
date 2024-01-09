@@ -20,6 +20,6 @@ class TableHead {
         void addRow();
         void* getElement(int col, int row);
 
-        ColumnInfo getColumn(int col);
+        BaseColumn* getColumn(int col);
         std::string getColumnType(int col);
 };
