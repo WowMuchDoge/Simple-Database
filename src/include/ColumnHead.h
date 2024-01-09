@@ -61,4 +61,9 @@ class ColumnHead : public BaseColumn {
         std::string getTypeName() const {
             return typeid(T).name();
         }
+
+        void addEmptyElement() override {
+            T emptyElement;
+            elements.push_back(emptyElement);
+        }
 };

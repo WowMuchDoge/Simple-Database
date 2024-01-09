@@ -16,7 +16,7 @@ class TableHead {
     public:
         TableHead() : head(ColumnHead<int>("id")) {}
 
-        void addColumn(std::string type);
+        void addColumn(std::string type, std::string name);
         void addRow();
         void* getElement(int col, int row);
 
