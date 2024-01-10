@@ -40,7 +40,7 @@ class ColumnHead : public BaseColumn {
             elements.insert(elements.begin() + index, val);
         }
 
-        void clearColumn() {
+        void clearColumn() override {
             elements.clear();
         }
 
