@@ -7,7 +7,7 @@
 #include "../include/Token.h"
 
 int main() {
-    Scanner scanner("ADD_ROW(TRUE FALSE)");
+    Scanner scanner("ADD_ROW(235, TRUE, FALSE, 345.12)");
 
     std::vector<Token> tokens = scanner.scanTokens();
 

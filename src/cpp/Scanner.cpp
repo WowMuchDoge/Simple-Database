@@ -20,34 +20,31 @@ char Scanner::advance() {
 
 void Scanner::addToken(TokenType type) {
     tokens.push_back(Token("", type));
-    advance();
 }
 
 void Scanner::addToken(std::string str) {
     tokens.push_back(Token(str, VALUE));
 }
 
-bool Scanner::isAlpha() {
-    return (peek() >= 'A' && peek() <= 'Z') || peek() == '_';
+bool Scanner::isAlpha(char c) {
+    return (c >= 'A' && c <= 'Z') || c == '_';
 }
 
-bool Scanner::isDigit() {
-    return peek() >= '0' && peek() <= '9';
+bool Scanner::isDigit(char c) {
+    return c >= '0' && c <= '9';
 }
 
 void Scanner::number() {
-    while (isDigit()) advance();
+    while (isDigit(peek())) advance();
     if (peek() == '.' && (source[current + 1] >= '0' && source[current + 1] < '9')) {
         advance();
-        while (isDigit()) advance();
+        while (isDigit(peek())) advance();
     }
     addToken(source.substr(start, current - start));
 }
 
 void Scanner::identifier() {
-    while (isAlpha()) {
-        advance();
-    }
+    while (isAlpha(peek())) advance();
     auto pos = keywords.find(source.substr(start, current - start));
 
     if (pos == keywords.end()) {
@@ -66,10 +63,10 @@ std::vector<Token> Scanner::scanTokens() {
             case '(': addToken(LEFT_PAREN); break;
             case ')': addToken(RIGHT_PAREN); break;
             default:
-                if (isDigit()) {
+                if (isDigit(c)) {
                     number();
                     break;
-                } else if (isAlpha()) {
+                } else if (isAlpha(c)) {
                     identifier();
                     break;
                 } else {

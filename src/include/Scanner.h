@@ -26,8 +26,8 @@ class Scanner {
         void addToken(TokenType type);
         void addToken(std::string val);
 
-        bool isAlpha();
-        bool isDigit();
+        bool isAlpha(char c);
+        bool isDigit(char c);
 
         void number();
         void identifier();
