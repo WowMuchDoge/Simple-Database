@@ -44,3 +44,35 @@ ColumnHead<int>* TableHead::getIntColumn(int col) {
         exit(1);
     }
 }
+
+ColumnHead<const char*>* TableHead::getStringColumn(int col) {
+    if (columns[col]->getTypeName() == "int") {
+        return (ColumnHead<const char*>*)(columns[col]);
+    } else {
+        exit(1);
+    }
+}
+
+ColumnHead<double>* TableHead::getDoubleColumn(int col) {
+    if (columns[col]->getTypeName() == "int") {
+        return (ColumnHead<double>*)(columns[col]);
+    } else {
+        exit(1);
+    }
+}
+
+ColumnHead<char>* TableHead::getCharColumn(int col) {
+    if (columns[col]->getTypeName() == "int") {
+        return (ColumnHead<char>*)(columns[col]);
+    } else {
+        exit(1);
+    }
+}
+
+ColumnHead<bool>* TableHead::getBoolColumn(int col) {
+    if (columns[col]->getTypeName() == "int") {
+        return (ColumnHead<bool>*)(columns[col]);
+    } else {
+        exit(1);
+    }
+}
