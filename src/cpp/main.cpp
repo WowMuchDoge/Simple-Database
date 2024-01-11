@@ -7,11 +7,11 @@
 #include "../include/Token.h"
 
 int main() {
-    Scanner scanner("INT STRING 5460989");
+    Scanner scanner("ADD_ROW(TRUE FALSE)");
 
     std::vector<Token> tokens = scanner.scanTokens();
 
     for (Token token : tokens) {
-        std::cout << token.type << '\n';
+        std::cout << token.type << ", " << token.value << '\n';
     }
 }

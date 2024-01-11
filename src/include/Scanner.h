@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
 
 #include "TokenType.h"
 #include "Token.h"
@@ -16,7 +16,7 @@ class Scanner {
 
         std::vector<Token> tokens;
 
-        std::unordered_map<std::string, TokenType> keywords;
+        std::map<std::string, TokenType> keywords;
 
         char advance();
         char peek();
@@ -41,6 +41,8 @@ class Scanner {
             keywords["STRING"] = STRING;
             keywords["ADD_COLUMN"] = ADD_COLUMN;
             keywords["ADD_ROW"] = ADD_ROW;
+            keywords["TRUE"] = TRUE;
+            keywords["FALSE"] = FALSE;
         }
 
         std::vector<Token> scanTokens();
