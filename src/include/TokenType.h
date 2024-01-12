@@ -7,7 +7,7 @@ typedef enum {
 
     TRUE, FALSE,
 
-    ADD_COLUMN, ADD_ROW,
+    ADD_COLUMN, ADD_ROW, GET_ELEMENT,
 
     END_OF_TEXT,
 } TokenType;

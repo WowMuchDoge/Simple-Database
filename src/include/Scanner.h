@@ -43,6 +43,7 @@ class Scanner {
             keywords["ADD_ROW"] = ADD_ROW;
             keywords["TRUE"] = TRUE;
             keywords["FALSE"] = FALSE;
+            keywords["GET_ELEMENT"] = GET_ELEMENT;
         }
 
         std::vector<Token> scanTokens();
