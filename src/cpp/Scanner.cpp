@@ -26,6 +26,10 @@ void Scanner::addToken(std::string str) {
     tokens.push_back(Token(str, VALUE));
 }
 
+void Scanner::addToken(TokenType type, std::string str) {
+    tokens.push_back(Token(str, type));
+}
+
 bool Scanner::isAlpha(char c) {
     return (c >= 'A' && c <= 'Z') || c == '_';
 }
@@ -55,6 +59,19 @@ void Scanner::identifier() {
     addToken(pos->second);
 }
 
+void Scanner::string() {
+    advance();
+    
+    while (peek() != 39) {
+        if (isAtEnd()) {
+            exit(1);
+        }
+        advance();
+    }
+    addToken(LITERAL, source.substr(start + 1, current - start - 1));
+    advance();
+}
+
 std::vector<Token> Scanner::scanTokens() {
     while (!isAtEnd()) {
         start = current;
@@ -62,6 +79,7 @@ std::vector<Token> Scanner::scanTokens() {
         switch(c) {
             case '(': addToken(LEFT_PAREN); break;
             case ')': addToken(RIGHT_PAREN); break;
+            case 39: string();
             default:
                 if (isDigit(c)) {
                     number();

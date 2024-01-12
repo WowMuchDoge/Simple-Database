@@ -7,7 +7,7 @@
 #include "../include/Token.h"
 
 int main() {
-    Scanner scanner("GET_ELEMENT(235, TRUE, FALSE, 345.12)");
+    Scanner scanner("'Hello World'");
 
     std::vector<Token> tokens = scanner.scanTokens();
 

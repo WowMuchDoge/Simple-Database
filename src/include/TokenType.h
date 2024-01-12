@@ -5,7 +5,7 @@ typedef enum {
 
     LEFT_PAREN, RIGHT_PAREN, VALUE,
 
-    TRUE, FALSE,
+    TRUE, FALSE, LITERAL,
 
     ADD_COLUMN, ADD_ROW, GET_ELEMENT,
 

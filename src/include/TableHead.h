@@ -6,6 +6,7 @@
 
 #include "BaseColumn.h"
 #include "ColumnHead.h"
+#include "TokenType.h"
 
 class TableHead {
     private:
@@ -17,7 +18,7 @@ class TableHead {
     public:
         TableHead() : head(ColumnHead<int>("id")), rowCount(0) {}
 
-        void addColumn(std::string type, std::string name);
+        void addColumn(TokenType type, std::string name);
         void addRow();
         void clearRows();
 
