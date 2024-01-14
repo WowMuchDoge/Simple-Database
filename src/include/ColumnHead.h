@@ -49,7 +49,6 @@ class ColumnHead : public BaseColumn {
         }
 
         T getElement(int index) {
-            if (index >= elements.size()) exit(1);
 
             return elements[index];
         }
@@ -65,5 +64,17 @@ class ColumnHead : public BaseColumn {
         void addEmptyElement() override {
             T emptyElement;
             elements.push_back(emptyElement);
+        }
+
+        void printElement(int index) override {
+            std::cout << elements[index] << '\n';
+        }
+
+        void removeElement(int index) override {
+            elements.erase(elements.begin() + index);
+        }
+
+        std::string getName() override {
+            return name;
         }
 };

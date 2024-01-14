@@ -25,6 +25,7 @@ class Scanner {
 
         void addToken(TokenType type);
         void addToken(std::string val);
+        void addToken(TokenType type, std::string str);
 
         bool isAlpha(char c);
         bool isDigit(char c);
@@ -32,18 +33,21 @@ class Scanner {
         void number();
         void identifier();
 
+        void string();
     public:
         Scanner(std::string src) : source(src), current(0), start(0) {
             keywords["INT"] = INT;
             keywords["BOOL"] = BOOL;
             keywords["DOUBLE"] = DOUBLE;
-            keywords["CHAR"] = CHAR;
             keywords["STRING"] = STRING;
             keywords["ADD_COLUMN"] = ADD_COLUMN;
             keywords["ADD_ROW"] = ADD_ROW;
             keywords["TRUE"] = TRUE;
             keywords["FALSE"] = FALSE;
             keywords["GET_ELEMENT"] = GET_ELEMENT;
+            keywords["REMOVE_COLUMN"] = REMOVE_COLUMN;
+            keywords["REMOVE_ROW"] = REMOVE_ROW;
+            keywords["EDIT_ROW"] = EDIT_ROW;
         }
 
         std::vector<Token> scanTokens();

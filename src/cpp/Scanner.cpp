@@ -4,28 +4,6 @@ bool Scanner::isAtEnd() {
     return source[current] == '\0';
 }
 
-char Scanner::previous() {
-    return source[current - 1];
-}
-
-char Scanner::peek() {
-    return source[current];
-}
-
-char Scanner::advance() {
-    if (isAtEnd()) return previous();
-
-    return source[current++];
-}
-
-void Scanner::addToken(TokenType type) {
-    tokens.push_back(Token("", type));
-}
-
-void Scanner::addToken(std::string str) {
-    tokens.push_back(Token(str, VALUE));
-}
-
 bool Scanner::isAlpha(char c) {
     return (c >= 'A' && c <= 'Z') || c == '_';
 }
@@ -34,47 +12,47 @@ bool Scanner::isDigit(char c) {
     return c >= '0' && c <= '9';
 }
 
-void Scanner::number() {
-    while (isDigit(peek())) advance();
-    if (peek() == '.' && (source[current + 1] >= '0' && source[current + 1] < '9')) {
-        advance();
-        while (isDigit(peek())) advance();
-    }
-    addToken(source.substr(start, current - start));
-}
-
-void Scanner::identifier() {
-    while (isAlpha(peek())) advance();
-    auto pos = keywords.find(source.substr(start, current - start));
-
-    if (pos == keywords.end()) {
-        std::cout << "Unknown identifier: " << source.substr(start, current - start) << ".\n";
-        exit(1);
-    };
-
-    addToken(pos->second);
-}
-
 std::vector<Token> Scanner::scanTokens() {
+    char c = source[current];
     while (!isAtEnd()) {
         start = current;
-        char c = advance();
+        c = source[current];
         switch(c) {
-            case '(': addToken(LEFT_PAREN); break;
-            case ')': addToken(RIGHT_PAREN); break;
+            case '(': tokens.push_back(Token("", LEFT_PAREN)); current++; break;
+            case ')': tokens.push_back(Token("", RIGHT_PAREN)); current++; break;
+            case '"':
+                while (source[++current] != '"') {
+                    if (isAtEnd()) {
+                        exit(1);
+                    }
+                }
+                tokens.push_back(Token(source.substr(start + 1, current - start - 1), VALUE));
+                current++;
+                break;
             default:
-                if (isDigit(c)) {
-                    number();
+                if (isAlpha(c)) {
+                    while (isAlpha(source[++current]));
+                    auto pos = keywords.find(source.substr(start, current - start));
+                    if (pos == keywords.end()) {
+                        std::cout << "Unknown substring " << source.substr(start, current - start) << ".\n";
+                        exit(1);
+                    }
+                    tokens.push_back(Token("", pos->second));
                     break;
-                } else if (isAlpha(c)) {
-                    identifier();
+                } else if (isDigit(c)) {
+                    while (isDigit(source[++current]));
+                    if (source[current] == '.') {
+                        while (isDigit(source[++current]));
+                    }
+                    tokens.push_back(Token(source.substr(start, current - start), VALUE));
                     break;
                 } else {
-                    advance();
+                    current++;
                     break;
                 }
+                break;
         }
     }
-    addToken(END_OF_TEXT);
+    tokens.push_back(Token("", END_OF_TEXT));
     return tokens;
 }
