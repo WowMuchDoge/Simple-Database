@@ -47,7 +47,15 @@ void runCLI() {
 }
 
 void runFile(char* filename) {
+    std::ifstream file(filename);
+    std::string line;
 
+    while (std::getline(file, line)) {
+        run(line);
+    }
+
+    file.close();
+    head.writeToFile();
 }
 
 int main(int argc, char** argv) {
