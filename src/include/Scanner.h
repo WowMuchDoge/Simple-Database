@@ -51,4 +51,6 @@ class Scanner {
         }
 
         std::vector<Token> scanTokens();
+
+        void setText(std::string txt);
 };

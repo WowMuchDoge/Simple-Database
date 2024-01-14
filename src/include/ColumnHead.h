@@ -77,4 +77,8 @@ class ColumnHead : public BaseColumn {
         std::string getName() override {
             return name;
         }
+
+        int rowLen() override {
+            return elements.size();
+        }
 };

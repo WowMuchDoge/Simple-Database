@@ -8,7 +8,7 @@ Token Parser::peek() {
 }
 
 bool Parser::isAtEnd() {
-    return peek().type == END_OF_TEXT;
+    return current == tokens.size() - 1;
 }
 
 Token Parser::previous() {
@@ -25,13 +25,18 @@ void Parser::addColumn() {
     TokenType t1 = advance().type;
     std::string v2 = advance().value;
     head->addColumn(t1, v2);
+    if (head->columns.size() > 0) {
+        for (int i = 0; i < head->columns[0]->rowLen(); i++) {
+            head->getColumn(v2)->addEmptyElement();
+        }
+    }
     advance();
 }
 
 void Parser::addRow() {
     advance(); // Add error handling to ensure that this consumes a parenthesis
     Token tkn = peek();
-    int i = 1;
+    int i = 0;
     TokenType type;
     while ((tkn = advance()).type != RIGHT_PAREN) {
         if (head->columns[i]->getTypeName() == "i") {
@@ -51,15 +56,39 @@ void Parser::addRow() {
         }
         i++;
     }
-    ((ColumnHead<int>*)(head->columns[0]))->addElement(((ColumnHead<int>*)(head->columns[0]))->getElements().size());
+}
+
+
+void Parser::editRow() {
+    advance(); // Add error handling to ensure that this consumes a parenthesis
+    int index = std::stoi(advance().value);
+    Token tkn = peek();
+    int i = 0;
+    TokenType type;
+    while ((tkn = advance()).type != RIGHT_PAREN) {
+        if (head->columns[i]->getTypeName() == "i") {
+            ((ColumnHead<int>*)(head->columns[i]))->editElement(std::stoi(tkn.value), index);
+        } else if (head->columns[i]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+            ((ColumnHead<std::string>*)(head->columns[i]))->editElement(tkn.value, index);
+        } else if (head->columns[i]->getTypeName() == "d") {
+            ((ColumnHead<double>*)(head->columns[i]))->editElement(std::stod(tkn.value), index);
+        } else if (head->columns[i]->getTypeName() == "b") {
+            if (tkn.type == TRUE) {
+                ((ColumnHead<bool>*)(head->columns[i]))->editElement(true, index);
+            } else if (tkn.type == FALSE) {
+                ((ColumnHead<bool>*)(head->columns[i]))->editElement(false, index);
+            } else {
+                exit(1);
+            }
+        }
+        i++;
+    }
 }
 
 void Parser::getElement() {
     advance(); // Add error handling to ensure that this consumes a parenthesis
     std::string col = advance().value;
     int row  = std::stoi(advance().value);
-
-    std::cout << col << '\n';
 
     head->getColumn(col)->printElement(row);
 
@@ -83,39 +112,7 @@ void Parser::removeRow() {
         column->removeElement(row);
     }
 
-    int len  = ((ColumnHead<int>*)(head->columns[0]))->getElements().size();
-    for (int i = 0; i < len; i++) {
-        ((ColumnHead<int>*)(head->columns[0]))->editElement(i, i);
-    }
-
     advance();
-}
-
-void Parser::editRow() {
-    advance(); // Add error handling to ensure that this consumes a parenthesis
-    int index = std::stoi(advance().value);
-    Token tkn = peek();
-    int i = 1;
-    TokenType type;
-    while ((tkn = advance()).type != RIGHT_PAREN) {
-        if (head->columns[i]->getTypeName() == "i") {
-            ((ColumnHead<int>*)(head->columns[i]))->editElement(std::stoi(tkn.value), index);
-        } else if (head->columns[i]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
-            ((ColumnHead<std::string>*)(head->columns[i]))->editElement(tkn.value, index);
-        } else if (head->columns[i]->getTypeName() == "d") {
-            ((ColumnHead<double>*)(head->columns[i]))->editElement(std::stod(tkn.value), index);
-        } else if (head->columns[i]->getTypeName() == "b") {
-            if (tkn.type == TRUE) {
-                ((ColumnHead<bool>*)(head->columns[i]))->editElement(true, index);
-            } else if (tkn.type == FALSE) {
-                ((ColumnHead<bool>*)(head->columns[i]))->editElement(false, index);
-            } else {
-                exit(1);
-            }
-        }
-        i++;
-    }
-    ((ColumnHead<int>*)(head->columns[0]))->addElement(((ColumnHead<int>*)(head->columns[0]))->getElements().size());
 }
 
 void Parser::parse() {
@@ -126,10 +123,15 @@ void Parser::parse() {
             case GET_ELEMENT: getElement(); break;
             case REMOVE_COLUMN: removeColumn(); break;
             case REMOVE_ROW: removeRow(); break;
+            case END_OF_TEXT: break;
             case EDIT_ROW: editRow(); break;
             default:
                 exit(1);
                 break;
         }
     }
+}
+
+void Parser::setInput(std::vector<Token> tkns) {
+    tokens = tkns;
 }
