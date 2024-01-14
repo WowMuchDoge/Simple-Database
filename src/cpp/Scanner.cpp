@@ -12,9 +12,13 @@ bool Scanner::isDigit(char c) {
     return c >= '0' && c <= '9';
 }
 
+void Scanner::setText(std::string txt) {
+    source = txt;
+}
+
 std::vector<Token> Scanner::scanTokens() {
     char c = source[current];
-    while (!isAtEnd()) {
+    while (current < source.size()) {
         start = current;
         c = source[current];
         switch(c) {
@@ -22,7 +26,7 @@ std::vector<Token> Scanner::scanTokens() {
             case ')': tokens.push_back(Token("", RIGHT_PAREN)); current++; break;
             case '"':
                 while (source[++current] != '"') {
-                    if (isAtEnd()) {
+                    if (source[current] == '\0') {
                         exit(1);
                     }
                 }

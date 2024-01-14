@@ -13,9 +13,7 @@ class TableHead {
         int rowCount;
 
     public:
-        TableHead() :  rowCount(0) {
-            columns.push_back(new ColumnHead<int>("id"));
-        }
+        TableHead() :  rowCount(0) {}
 
         void addColumn(TokenType type, std::string name);
         void addRow();
@@ -30,6 +28,8 @@ class TableHead {
         ColumnHead<double>* getDoubleColumn(int col);
         ColumnHead<char>* getCharColumn(int col);
         ColumnHead<bool>* getBoolColumn(int col);
+
+        void writeToFile();
 
         std::vector<BaseColumn*> columns;
 };

@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
 
 #include "../include/TableHead.h"
 #include "../include/BaseColumn.h"
@@ -71,5 +74,47 @@ BaseColumn* TableHead::getColumn(std::string colName) {
             return column;
         }
     }
+    std::cout << "Cannot find column\n";
     exit(1);
+}
+
+void TableHead::writeToFile() {
+    std::ofstream file("database.txt");
+    for (BaseColumn* column : columns) {
+            if (column->getTypeName() == "i") {
+                file << "ADD_COLUMN(INT " << '"' << column->getName() << '"' << ")";
+            } else if (column->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+                file << "ADD_COLUMN(STRING " << '"' << column->getName() << '"' << ")";
+            } else if (column->getTypeName() == "d") {
+                file << "ADD_COLUMN(DOUBLE " << '"' << column->getName() << '"' << ")";
+            } else if (column->getTypeName() == "b") {
+                file << "ADD_COLUMN(BOOL " << '"' << column->getName() << '"' << ")";
+            } else {
+                exit(1);
+            }
+        // file << column->getTypeName() << " " << column->getName() << " | ";
+        file << " ";
+    }
+    file << '\n';
+    int j = 0;
+    for (int i = 0; i < columns[0]->rowLen(); i++) {
+        file << "ADD_ROW(";
+        j = 0;
+        for (BaseColumn* column : columns) {
+            if (column->getTypeName() == "i") {
+                file << ((ColumnHead<int>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
+            } else if (column->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+                file << '"' << ((ColumnHead<std::string>*)column)->getElement(i) << '"' << (j == columns.size() - 1 ? "" : " ");
+            } else if (column->getTypeName() == "d") {
+                file << ((ColumnHead<double>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
+            } else if (column->getTypeName() == "b") {
+                file << ((ColumnHead<bool>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
+            } else {
+                exit(1);
+            }
+            j++;
+        }
+        file << ")\n";
+    }
+    file.close();
 }
