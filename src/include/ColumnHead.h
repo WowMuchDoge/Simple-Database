@@ -69,4 +69,8 @@ class ColumnHead : public BaseColumn {
         void printElement(int index) override {
             std::cout << elements[index] << '\n';
         }
+
+        void removeElement(int index) override {
+            elements.erase(elements.begin() + index);
+        }
 };

@@ -64,12 +64,39 @@ void Parser::getElement() {
     advance();
 }
 
+void Parser::removeColumn() {
+    advance(); // Add error handling to ensure that this consumes a parenthesis
+
+    int col = std::stoi(advance().value);
+    head->columns.erase(head->columns.begin() + col);
+
+    advance();
+}
+
+void Parser::removeRow() {
+    advance(); // Add error handling to ensure that this consumes a parenthesis
+    int row = std::stoi(advance().value);
+
+    for (BaseColumn* column : head->columns) {
+        column->removeElement(row);
+    }
+
+    int len  = ((ColumnHead<int>*)(head->columns[0]))->getElements().size();
+    for (int i = 0; i < len; i++) {
+        ((ColumnHead<int>*)(head->columns[0]))->editElement(i, i);
+    }
+
+    advance();
+}
+
 void Parser::parse() {
     while (!isAtEnd()) {
         switch(advance().type) {
             case ADD_COLUMN: addColumn(); break;
             case ADD_ROW: addRow(); break;
-            case GET_ELEMENT: getElement();
+            case GET_ELEMENT: getElement(); break;
+            case REMOVE_COLUMN: removeColumn(); break;
+            case REMOVE_ROW: removeRow(); break;
             default:
                 exit(1);
                 break;

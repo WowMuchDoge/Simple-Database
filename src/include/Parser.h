@@ -22,6 +22,9 @@ class Parser {
         void addColumn();
         void getElement();
         void addRow();
+
+        void removeColumn();
+        void removeRow();
     public:
         Parser(std::vector<Token> tkns, TableHead *h) : tokens(tkns), current(0), head(h) {}
         
