@@ -54,11 +54,22 @@ void Parser::addRow() {
     ((ColumnHead<int>*)(head->columns[0]))->addElement(((ColumnHead<int>*)(head->columns[0]))->getElements().size());
 }
 
+void Parser::getElement() {
+    advance(); // Add error handling to ensure that this consumes a parenthesis
+    int col = std::stoi(advance().value);
+    int row = std::stoi(advance().value);
+
+    head->columns[col]->printElement(row);
+
+    advance();
+}
+
 void Parser::parse() {
     while (!isAtEnd()) {
         switch(advance().type) {
             case ADD_COLUMN: addColumn(); break;
             case ADD_ROW: addRow(); break;
+            case GET_ELEMENT: getElement();
             default:
                 exit(1);
                 break;

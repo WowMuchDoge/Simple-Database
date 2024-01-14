@@ -8,4 +8,5 @@ class BaseColumn {
         virtual std::string getTypeName() const = 0;
         virtual void addEmptyElement() = 0;
         virtual void clearColumn() = 0;
+        virtual void printElement(int index) = 0;
 };

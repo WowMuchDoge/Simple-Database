@@ -45,6 +45,9 @@ class Scanner {
             keywords["TRUE"] = TRUE;
             keywords["FALSE"] = FALSE;
             keywords["GET_ELEMENT"] = GET_ELEMENT;
+            keywords["REMOVE_COLUMN"] = REMOVE_COLUMN;
+            keywords["REMOVE_ROW"] = REMOVE_ROW;
+            keywords["EDIT_ROW"] = EDIT_ROW;
         }
 
         std::vector<Token> scanTokens();
