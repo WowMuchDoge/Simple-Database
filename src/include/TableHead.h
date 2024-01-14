@@ -10,13 +10,12 @@
 
 class TableHead {
     private:
-        ColumnHead<int> head;
-
-        std::vector<BaseColumn*> columns;
         int rowCount;
 
     public:
-        TableHead() : head(ColumnHead<int>("id")), rowCount(0) {}
+        TableHead() :  rowCount(0) {
+            columns.push_back(new ColumnHead<int>("id"));
+        }
 
         void addColumn(TokenType type, std::string name);
         void addRow();
@@ -26,8 +25,10 @@ class TableHead {
         std::string getColumnType(int col);
 
         ColumnHead<int>* getIntColumn(int col);
-        ColumnHead<const char*>* getStringColumn(int col);
+        ColumnHead<std::string>* getStringColumn(int col);
         ColumnHead<double>* getDoubleColumn(int col);
         ColumnHead<char>* getCharColumn(int col);
         ColumnHead<bool>* getBoolColumn(int col);
+
+        std::vector<BaseColumn*> columns;
 };

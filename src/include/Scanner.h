@@ -39,7 +39,6 @@ class Scanner {
             keywords["INT"] = INT;
             keywords["BOOL"] = BOOL;
             keywords["DOUBLE"] = DOUBLE;
-            keywords["CHAR"] = CHAR;
             keywords["STRING"] = STRING;
             keywords["ADD_COLUMN"] = ADD_COLUMN;
             keywords["ADD_ROW"] = ADD_ROW;

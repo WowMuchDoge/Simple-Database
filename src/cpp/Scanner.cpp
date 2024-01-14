@@ -52,10 +52,8 @@ void Scanner::identifier() {
     auto pos = keywords.find(source.substr(start, current - start));
 
     if (pos == keywords.end()) {
-        std::cout << "Unknown identifier: " << source.substr(start, current - start) << ".\n";
         exit(1);
     };
-
     addToken(pos->second);
 }
 
@@ -68,8 +66,7 @@ void Scanner::string() {
         }
         advance();
     }
-    addToken(LITERAL, source.substr(start + 1, current - start - 1));
-    advance();
+    addToken(VALUE, source.substr(start + 1, current - start - 1));
 }
 
 std::vector<Token> Scanner::scanTokens() {
