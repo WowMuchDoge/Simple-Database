@@ -25,6 +25,11 @@ void Parser::addColumn() {
     TokenType t1 = advance().type;
     std::string v2 = advance().value;
     head->addColumn(t1, v2);
+    if (head->columns.size() > 0) {
+        for (int i = 0; i < head->columns[0]->rowLen(); i++) {
+            head->getColumn(v2)->addEmptyElement();
+        }
+    }
     advance();
 }
 
@@ -45,6 +50,33 @@ void Parser::addRow() {
                 ((ColumnHead<bool>*)(head->columns[i]))->addElement(true);
             } else if (tkn.type == FALSE) {
                 ((ColumnHead<bool>*)(head->columns[i]))->addElement(false);
+            } else {
+                exit(1);
+            }
+        }
+        i++;
+    }
+}
+
+
+void Parser::editRow() {
+    advance(); // Add error handling to ensure that this consumes a parenthesis
+    int index = std::stoi(advance().value);
+    Token tkn = peek();
+    int i = 0;
+    TokenType type;
+    while ((tkn = advance()).type != RIGHT_PAREN) {
+        if (head->columns[i]->getTypeName() == "i") {
+            ((ColumnHead<int>*)(head->columns[i]))->editElement(std::stoi(tkn.value), index);
+        } else if (head->columns[i]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+            ((ColumnHead<std::string>*)(head->columns[i]))->editElement(tkn.value, index);
+        } else if (head->columns[i]->getTypeName() == "d") {
+            ((ColumnHead<double>*)(head->columns[i]))->editElement(std::stod(tkn.value), index);
+        } else if (head->columns[i]->getTypeName() == "b") {
+            if (tkn.type == TRUE) {
+                ((ColumnHead<bool>*)(head->columns[i]))->editElement(true, index);
+            } else if (tkn.type == FALSE) {
+                ((ColumnHead<bool>*)(head->columns[i]))->editElement(false, index);
             } else {
                 exit(1);
             }
@@ -92,6 +124,7 @@ void Parser::parse() {
             case REMOVE_COLUMN: removeColumn(); break;
             case REMOVE_ROW: removeRow(); break;
             case END_OF_TEXT: break;
+            case EDIT_ROW: editRow(); break;
             default:
                 exit(1);
                 break;
