@@ -22,6 +22,7 @@ class TableHead {
         void clearRows();
 
         BaseColumn* getColumn(int col);
+        BaseColumn* getColumn(std::string colName);
         std::string getColumnType(int col);
 
         ColumnHead<int>* getIntColumn(int col);

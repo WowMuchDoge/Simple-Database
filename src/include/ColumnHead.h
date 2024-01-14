@@ -73,4 +73,8 @@ class ColumnHead : public BaseColumn {
         void removeElement(int index) override {
             elements.erase(elements.begin() + index);
         }
+
+        std::string getName() override {
+            return name;
+        }
 };

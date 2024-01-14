@@ -56,10 +56,12 @@ void Parser::addRow() {
 
 void Parser::getElement() {
     advance(); // Add error handling to ensure that this consumes a parenthesis
-    int col = std::stoi(advance().value);
-    int row = std::stoi(advance().value);
+    std::string col = advance().value;
+    int row  = std::stoi(advance().value);
 
-    head->columns[col]->printElement(row);
+    std::cout << col << '\n';
+
+    head->getColumn(col)->printElement(row);
 
     advance();
 }

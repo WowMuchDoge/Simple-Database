@@ -64,3 +64,12 @@ ColumnHead<bool>* TableHead::getBoolColumn(int col) {
         exit(1);
     }
 }
+
+BaseColumn* TableHead::getColumn(std::string colName) {
+    for (BaseColumn* column : columns) {
+        if (column->getName() == colName) {
+            return column;
+        }
+    }
+    exit(1);
+}

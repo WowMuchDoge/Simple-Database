@@ -10,4 +10,5 @@ class BaseColumn {
         virtual void clearColumn() = 0;
         virtual void printElement(int index) = 0;
         virtual void removeElement(int index) = 0;
+        virtual std::string getName() = 0;
 };
