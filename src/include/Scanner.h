@@ -50,7 +50,7 @@ class Scanner {
             keywords["EDIT_ROW"] = EDIT_ROW;
         }
 
-        std::vector<Token> scanTokens();
+        std::vector<Token> scanTokens(std::string fileName);
 
         void setText(std::string txt);
 };

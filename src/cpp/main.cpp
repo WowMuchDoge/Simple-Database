@@ -8,6 +8,7 @@
 #include "../include/Scanner.h"
 #include "../include/Parser.h"
 #include "../include/Token.h"
+#include "../include/LexError.h"
 
 std::string text = "";
 
@@ -17,17 +18,19 @@ TableHead head;
 Scanner scanner(text);
 Parser parser(t, &head);
 
-int commandsRun = 0;
-
 void run(std::string input) {
-    text.append(" " + input + " ");
-    std::cout << text << '\n';
-    scanner.setText(text);
-    std::vector<Token> tokens = scanner.scanTokens();
+    scanner.setText(input);
+    std::vector<Token> tokens;
+
+    try {
+        tokens = scanner.scanTokens("<stdin>");
+    } catch (LexError error) {
+        std::cout << error.getMessage();
+        return;
+    }
 
     parser.setInput(tokens);
     parser.parse();
-    commandsRun++;
 }
 
 void runCLI() {
@@ -40,6 +43,11 @@ void runCLI() {
             std::cout << "Help stuff\n";
         } else if (txt == "save") {
             head.writeToFile();
+        } else if (txt == "exit") {
+            break;
+        } else if (txt == "\0") {
+            std::cout << '\n';
+            break;
         } else {
             run(txt);
         }
@@ -74,3 +82,16 @@ int main(int argc, char** argv) {
         exit(1);
     }
 }
+
+// int main() {
+//     LexError error("Unknown identifier 'ADS_COLUMN'", 1, 0, 9, "ADS_COLUMN(poggers 'double')");
+//     Scanner scanner("sdifj(sjfd, sfkj)");
+//     try {
+//         std::vector<Token> tokens = scanner.scanTokens();
+//     } catch (LexError error) {
+//         std::cout << error.getMessage();
+//         break;
+//     }
+
+//     std::cout << tokens[0].type << '\n';
+// }

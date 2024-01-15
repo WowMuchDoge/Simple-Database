@@ -108,7 +108,11 @@ void TableHead::writeToFile() {
             } else if (column->getTypeName() == "d") {
                 file << ((ColumnHead<double>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
             } else if (column->getTypeName() == "b") {
-                file << ((ColumnHead<bool>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
+                if (((ColumnHead<bool>*)column)->getElement(i) == true) {
+                    file << "TRUE" << (j == columns.size() - 1 ? "" : " ");
+                } else if (((ColumnHead<bool>*)column)->getElement(i) == false) {
+                    file << "FALSE" << (j == columns.size() - 1 ? "" : " ");
+                }
             } else {
                 exit(1);
             }

@@ -1,11 +1,17 @@
+#include <iostream>
+#include <sstream>
+
 #include "../include/Scanner.h"
+#include "../include/LexError.h"
 
 bool Scanner::isAtEnd() {
     return source[current] == '\0';
 }
 
 bool Scanner::isAlpha(char c) {
-    return (c >= 'A' && c <= 'Z') || c == '_';
+    return (c >= 'A' && c <= 'Z') || 
+           (c >= 'a' && c <= 'z') ||
+            c == '_';
 }
 
 bool Scanner::isDigit(char c) {
@@ -16,7 +22,15 @@ void Scanner::setText(std::string txt) {
     source = txt;
 }
 
-std::vector<Token> Scanner::scanTokens() {
+std::vector<Token> Scanner::scanTokens(std::string fileName) {
+    std::vector<std::string> lines;
+    std::istringstream src(source);
+    std::string ln;
+    while (getline(src, ln)) {
+        lines.push_back(ln);
+    }
+    int line = 1;
+    current = 0;
     char c = source[current];
     while (current < source.size()) {
         start = current;
@@ -24,6 +38,7 @@ std::vector<Token> Scanner::scanTokens() {
         switch(c) {
             case '(': tokens.push_back(Token("", LEFT_PAREN)); current++; break;
             case ')': tokens.push_back(Token("", RIGHT_PAREN)); current++; break;
+            case '\n': line++; current++;
             case '"':
                 while (source[++current] != '"') {
                     if (source[current] == '\0') {
@@ -38,8 +53,8 @@ std::vector<Token> Scanner::scanTokens() {
                     while (isAlpha(source[++current]));
                     auto pos = keywords.find(source.substr(start, current - start));
                     if (pos == keywords.end()) {
-                        std::cout << "Unknown substring " << source.substr(start, current - start) << ".\n";
-                        exit(1);
+                        throw LexError(("Unknown identifier '" + source.substr(start, current - start) + "'."), line, start, current - 1, lines[line - 1]);
+                        break;
                     }
                     tokens.push_back(Token("", pos->second));
                     break;
