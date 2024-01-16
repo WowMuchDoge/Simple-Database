@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <map>
@@ -34,8 +35,10 @@ class Scanner {
         void identifier();
 
         void string();
+
+        std::vector<std::string> lines;
     public:
-        Scanner(std::string src) : source(src), current(0), start(0) {
+        Scanner(std::string srce) : source(srce), current(0), start(0) {
             keywords["INT"] = INT;
             keywords["BOOL"] = BOOL;
             keywords["DOUBLE"] = DOUBLE;
@@ -53,4 +56,7 @@ class Scanner {
         std::vector<Token> scanTokens(std::string fileName);
 
         void setText(std::string txt);
+        std::vector<std::string> getLines();
+        void setLines();
+        std::vector<Token>* getTokens();
 };

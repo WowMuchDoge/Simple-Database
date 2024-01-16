@@ -21,6 +21,7 @@ Parser parser(t, &head);
 void run(std::string input) {
     scanner.setText(input);
     std::vector<Token> tokens;
+    scanner.setLines();
 
     try {
         tokens = scanner.scanTokens("<stdin>");

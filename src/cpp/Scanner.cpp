@@ -22,13 +22,9 @@ void Scanner::setText(std::string txt) {
     source = txt;
 }
 
+
+
 std::vector<Token> Scanner::scanTokens(std::string fileName) {
-    std::vector<std::string> lines;
-    std::istringstream src(source);
-    std::string ln;
-    while (getline(src, ln)) {
-        lines.push_back(ln);
-    }
     int line = 1;
     current = 0;
     char c = source[current];
@@ -36,16 +32,19 @@ std::vector<Token> Scanner::scanTokens(std::string fileName) {
         start = current;
         c = source[current];
         switch(c) {
-            case '(': tokens.push_back(Token("", LEFT_PAREN)); current++; break;
-            case ')': tokens.push_back(Token("", RIGHT_PAREN)); current++; break;
+            case '(': tokens.push_back(Token("(", LEFT_PAREN, line, current)); current++; break;
+            case ')': tokens.push_back(Token(")", RIGHT_PAREN, line, current)); current++; break;
             case '\n': line++; current++;
+            case ' ':
+            case '\r':
+            case '\t': current++; break;
             case '"':
                 while (source[++current] != '"') {
                     if (source[current] == '\0') {
-                        exit(1);
+                        throw LexError("Unterminated string.", line, start, current - 1, lines[line - 1]);
                     }
                 }
-                tokens.push_back(Token(source.substr(start + 1, current - start - 1), VALUE));
+                tokens.push_back(Token(source.substr(start + 1, current - start - 1), VALUE, line, start));
                 current++;
                 break;
             default:
@@ -56,22 +55,39 @@ std::vector<Token> Scanner::scanTokens(std::string fileName) {
                         throw LexError(("Unknown identifier '" + source.substr(start, current - start) + "'."), line, start, current - 1, lines[line - 1]);
                         break;
                     }
-                    tokens.push_back(Token("", pos->second));
+                    tokens.push_back(Token(pos->first, pos->second, line, start));
                     break;
                 } else if (isDigit(c)) {
                     while (isDigit(source[++current]));
                     if (source[current] == '.') {
                         while (isDigit(source[++current]));
                     }
-                    tokens.push_back(Token(source.substr(start, current - start), VALUE));
+                    tokens.push_back(Token(source.substr(start, current - start), VALUE, line, start));
                     break;
                 } else {
-                    current++;
-                    break;
+                    throw LexError(("Unknown symbol '" + std::string(1, source[current]) + "'."), line, current, current, lines[line - 1]);
                 }
                 break;
         }
     }
-    tokens.push_back(Token("", END_OF_TEXT));
+    tokens.push_back(Token("", END_OF_TEXT, line, current));
     return tokens;
+}
+
+std::vector<std::string> Scanner::getLines() {
+    return lines;
+}
+
+void Scanner::setLines() {
+    lines.clear();
+    std::istringstream src(source);
+    std::string ln;
+    while (getline(src, ln)) {
+        lines.push_back(ln);
+        std::cout << ln << '\n';
+    }
+}
+
+std::vector<Token>* Scanner::getTokens() {
+    return &tokens;
 }
