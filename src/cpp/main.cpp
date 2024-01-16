@@ -9,6 +9,7 @@
 #include "../include/Parser.h"
 #include "../include/Token.h"
 #include "../include/LexError.h"
+#include "../include/ErrorScan.h"
 
 std::string text = "";
 
@@ -22,12 +23,28 @@ void run(std::string input) {
     scanner.setText(input);
     std::vector<Token> tokens;
     scanner.setLines();
+    int sIndex = tokens.size();
 
     try {
         tokens = scanner.scanTokens("<stdin>");
     } catch (LexError error) {
         std::cout << error.getMessage();
         return;
+    }
+
+    int eIndex = tokens.size() - 1;
+
+    try {
+        ErrorScan eScan(tokens, &head, scanner.getLines());
+        eScan.checkTokens();
+    } catch (ParseError error) {
+        tokens.erase(tokens.begin() + sIndex, tokens.begin() + eIndex - 1);
+        std::cout << error.getMessage();
+        return;
+    }
+
+    for (Token token : tokens) {
+        std::cout << token.value << "\n";
     }
 
     parser.setInput(tokens);

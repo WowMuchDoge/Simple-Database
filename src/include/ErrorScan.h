@@ -10,13 +10,27 @@
 #include "BaseColumn.h"
 #include "Token.h"
 #include "TokenType.h"
+#include "ParseError.h"
 
 class ErrorScan {
     public:
-        ErrorScan(std::vector<Token> tkns, TableHead* hd);
+        ErrorScan(std::vector<Token> tkns, TableHead* hd, std::vector<std::string> lns);
         void checkTokens();
     private:
         std::vector<Token> tokens;
         TableHead* head;
         int current = 0;
+
+        Token advance();
+        Token peek();
+        Token previous();
+        
+        bool isAtEnd();
+
+        void addRow();
+        void addColumn();
+
+        void consume(TokenType type, std::string msg);
+
+        std::vector<std::string> lines;
 };

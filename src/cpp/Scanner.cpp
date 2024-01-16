@@ -44,7 +44,7 @@ std::vector<Token> Scanner::scanTokens(std::string fileName) {
                         throw LexError("Unterminated string.", line, start, current - 1, lines[line - 1]);
                     }
                 }
-                tokens.push_back(Token(source.substr(start + 1, current - start - 1), VALUE, line, start));
+                tokens.push_back(Token(source.substr(start, current - start + 1), VALUE, line, start));
                 current++;
                 break;
             default:
