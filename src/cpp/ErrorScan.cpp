@@ -2,6 +2,13 @@
 
 ErrorScan::ErrorScan(std::vector<Token> tkns, TableHead* hd, std::vector<std::string> lns) : tokens(tkns), head(hd), lines(lns) {}
 
+static std::string getTypeString(TokenType type) {
+    if (type == INT) return "INT";
+    if (type == STRING) return "STRING";
+    if (type == DOUBLE) return "DOUBLE";
+    if (type == BOOL) return "BOOL";
+}
+
 void ErrorScan::addColumn() {
     consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
 
@@ -12,16 +19,41 @@ void ErrorScan::addColumn() {
         throw ParseError(previous(), "Expected a value, got '" + previous().value + "' instead.", lines, current - previous().value.size(), current);
     }
 
-    consume(LEFT_PAREN, "Expected ')', got '" + peek().value + "' instead.");
+    consume(RIGHT_PAREN, "Expected ')', got '" + peek().value + "' instead.");
 }
 
-void ErrorScan::addRow() {}
+void ErrorScan::addRow() {
+    consume(LEFT_PAREN, "Expected ')', got '" + peek().value + "' instead.");
+
+    Token tkn = peek();
+    int i = 0;
+    while ((tkn = advance()).type != RIGHT_PAREN) {
+        if (head->columns[i]->getTypeName() == "i") {
+            if (tkn.type != INT) {
+                throw ParseError(tkn, "Expected type 'INT', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
+            }
+        } else if (head->columns[i]->getTypeName() == "d") {
+            if (tkn.type != DOUBLE) {
+                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
+            }
+        } else if (head->columns[i]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+            if (tkn.type != STRING) {
+                throw ParseError(tkn, "Expected type 'STRING', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
+            }        
+        } else if (head->columns[i]->getTypeName() == "b") {
+            if (tkn.type != BOOL) {
+                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
+            }        
+        }
+        i++;
+    } 
+}
 
 void ErrorScan::checkTokens() {
     while (!isAtEnd()) {
         switch(advance().type) {
-            case ADD_COLUMN: addColumn();
-            case ADD_ROW: addRow();
+            case ADD_COLUMN: addColumn(); break;
+            case ADD_ROW: addRow(); break;
         }
     }
 }
