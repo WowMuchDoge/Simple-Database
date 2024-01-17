@@ -25,7 +25,9 @@ void Scanner::setText(std::string txt) {
 
 
 std::vector<Token> Scanner::scanTokens(std::string fileName) {
+    tokens.clear();
     int line = 1;
+    bool doubleState = false;
     current = 0;
     char c = source[current];
     while (current < source.size()) {
@@ -44,7 +46,7 @@ std::vector<Token> Scanner::scanTokens(std::string fileName) {
                         throw LexError("Unterminated string.", line, start, current - 1, lines[line - 1]);
                     }
                 }
-                tokens.push_back(Token(source.substr(start, current - start + 1), VALUE, line, start));
+                tokens.push_back(Token(source.substr(start, current - start + 1), LITERAL, line, start));
                 current++;
                 break;
             default:
@@ -61,8 +63,9 @@ std::vector<Token> Scanner::scanTokens(std::string fileName) {
                     while (isDigit(source[++current]));
                     if (source[current] == '.') {
                         while (isDigit(source[++current]));
+                        doubleState = true;
                     }
-                    tokens.push_back(Token(source.substr(start, current - start), VALUE, line, start));
+                    tokens.push_back(Token(source.substr(start, current - start), (doubleState ? DOUBLE_TYPE : INT_TYPE), line, start));
                     break;
                 } else {
                     throw LexError(("Unknown symbol '" + std::string(1, source[current]) + "'."), line, current, current, lines[line - 1]);

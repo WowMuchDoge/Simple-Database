@@ -3,10 +3,10 @@
 ErrorScan::ErrorScan(std::vector<Token> tkns, TableHead* hd, std::vector<std::string> lns) : tokens(tkns), head(hd), lines(lns) {}
 
 static std::string getTypeString(TokenType type) {
-    if (type == INT) return "INT";
-    if (type == STRING) return "STRING";
-    if (type == DOUBLE) return "DOUBLE";
-    if (type == BOOL) return "BOOL";
+    if (type == INT_TYPE) return "INT";
+    if (type == LITERAL) return "STRING";
+    if (type == TRUE || true == FALSE) return "BOOL";
+    if (type == DOUBLE_TYPE) return "DOUBLE";
 }
 
 void ErrorScan::addColumn() {
@@ -23,21 +23,22 @@ void ErrorScan::addColumn() {
 }
 
 void ErrorScan::addRow() {
-    consume(LEFT_PAREN, "Expected ')', got '" + peek().value + "' instead.");
+    consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
 
-    Token tkn = peek();
+    Token tkn = previous();
+    std::cout << "Columns index 0 type is " << head->columns[0]->getTypeName() << "Token type is " << tkn.type << '\n';
     int i = 0;
     while ((tkn = advance()).type != RIGHT_PAREN) {
         if (head->columns[i]->getTypeName() == "i") {
-            if (tkn.type != INT) {
+            if (tkn.type != INT_TYPE) {
                 throw ParseError(tkn, "Expected type 'INT', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
             }
         } else if (head->columns[i]->getTypeName() == "d") {
-            if (tkn.type != DOUBLE) {
+            if (tkn.type != DOUBLE_TYPE) {
                 throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
             }
         } else if (head->columns[i]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
-            if (tkn.type != STRING) {
+            if (tkn.type != LITERAL) {
                 throw ParseError(tkn, "Expected type 'STRING', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
             }        
         } else if (head->columns[i]->getTypeName() == "b") {

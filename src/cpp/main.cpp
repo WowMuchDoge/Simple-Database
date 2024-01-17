@@ -34,6 +34,10 @@ void run(std::string input) {
 
     int eIndex = tokens.size() - 1;
 
+    for (Token token : tokens) {
+        std::cout << token.value << '\n';
+    }
+
     try {
         ErrorScan eScan(tokens, &head, scanner.getLines());
         eScan.checkTokens();
@@ -41,10 +45,6 @@ void run(std::string input) {
         tokens.erase(tokens.begin() + sIndex, tokens.begin() + eIndex - 1);
         std::cout << error.getMessage();
         return;
-    }
-
-    for (Token token : tokens) {
-        std::cout << token.value << "\n";
     }
 
     parser.setInput(tokens);
