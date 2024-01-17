@@ -82,13 +82,13 @@ void TableHead::writeToFile() {
     std::ofstream file("database.txt");
     for (BaseColumn* column : columns) {
             if (column->getTypeName() == "i") {
-                file << "ADD_COLUMN(INT " << '"' << column->getName() << '"' << ")";
+                file << "ADD_COLUMN(INT " << column->getName() << ")";
             } else if (column->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
-                file << "ADD_COLUMN(STRING " << '"' << column->getName() << '"' << ")";
+                file << "ADD_COLUMN(STRING " << column->getName() << ")";
             } else if (column->getTypeName() == "d") {
-                file << "ADD_COLUMN(DOUBLE " << '"' << column->getName() << '"' << ")";
+                file << "ADD_COLUMN(DOUBLE " << column->getName() << ")";
             } else if (column->getTypeName() == "b") {
-                file << "ADD_COLUMN(BOOL " << '"' << column->getName() << '"' << ")";
+                file << "ADD_COLUMN(BOOL " << column->getName() << ")";
             } else {
                 exit(1);
             }
