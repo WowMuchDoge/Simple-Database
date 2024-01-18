@@ -29,6 +29,7 @@ class ErrorScan {
 
         void addRow();
         void addColumn();
+        void getElement();
 
         void consume(TokenType type, std::string msg);
 

@@ -1,5 +1,7 @@
 #include "../include/ErrorScan.h"
 
+#include <string>
+
 ErrorScan::ErrorScan(std::vector<Token> tkns, TableHead* hd, std::vector<std::string> lns) : tokens(tkns), head(hd), lines(lns) {}
 
 static std::string getTypeString(TokenType type) {
@@ -15,8 +17,8 @@ void ErrorScan::addColumn() {
     if ((advance().type != STRING) && (previous().type != INT) && (previous().type != DOUBLE) && (previous().type != BOOL)) {
         throw ParseError(previous(), "Expected a type, got '" + previous().value + "' instead.", lines, current - previous().value.size(), current);
     }
-    if ((advance().type != LITERAL) && (previous().type != VALUE)) {
-        throw ParseError(previous(), "Expected a value, got '" + previous().value + "' instead.", lines, current - previous().value.size(), current);
+    if ((advance().type != LITERAL)) {
+        throw ParseError(previous(), "Expected a column name, got '" + previous().value + "' instead.", lines, current - previous().value.size(), current);
     }
 
     consume(RIGHT_PAREN, "Expected ')', got '" + peek().value + "' instead.");
@@ -29,6 +31,10 @@ void ErrorScan::addRow() {
     std::cout << "Columns index 0 type is " << head->columns[0]->getTypeName() << "Token type is " << tkn.type << '\n';
     int i = 0;
     while ((tkn = advance()).type != RIGHT_PAREN) {
+        if (i >= head->columns.size()) {
+            std::cout << head->columns[0]->rowLen() << '\n';
+            throw ParseError(tkn, "Too many arguments in row call.", lines, current - tkn.value.size(), current);
+        }
         if (head->columns[i]->getTypeName() == "i") {
             if (tkn.type != INT_TYPE) {
                 throw ParseError(tkn, "Expected type 'INT', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
@@ -47,14 +53,38 @@ void ErrorScan::addRow() {
             }        
         }
         i++;
-    } 
+    }
+    if (i != head->columns.size()) {
+        throw ParseError(tkn, "Too few arguments in row call.", lines, current - tkn.value.size(), current);
+    }
+}
+
+void ErrorScan::getElement() {
+    consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
+    if (advance().type != LITERAL) {
+        throw ParseError(previous(), "Expected a name, got '" + getTypeString(previous().type) + "' instead.", lines, current - previous().value.size(), current);
+    } else {
+        if (head->getColumn(previous().value) == NULL) {
+            throw ParseError(previous(), "Column '" + previous().value + "' not in table.", lines, current - previous().value.size(), current);
+        }
+    }
+    if (advance().type != INT_TYPE) {
+        throw ParseError(previous(), "Expected an index, got '" + getTypeString(previous().type) + "' instead.", lines, current - previous().value.size(), current);
+    } else {
+        if (std::stoi(previous().value) >= head->columns[0]->rowLen()) {
+            throw ParseError(previous(), "Index '" + previous().value + "' out of range.", lines, current - previous().value.size(), current);
+        }
+    }
+    consume(RIGHT_PAREN, "Expected ')', got '" + previous().value + "' instead.");
 }
 
 void ErrorScan::checkTokens() {
+    current = 0;
     while (!isAtEnd()) {
         switch(advance().type) {
             case ADD_COLUMN: addColumn(); break;
             case ADD_ROW: addRow(); break;
+            case GET_ELEMENT: getElement(); break;
         }
     }
 }

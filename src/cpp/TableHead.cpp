@@ -40,7 +40,7 @@ ColumnHead<int>* TableHead::getIntColumn(int col) {
     if (columns[col]->getTypeName() == "i") {
         return (ColumnHead<int>*)(columns[col]);
     } else {
-        exit(1);
+        return NULL;
     }
 }
 
@@ -48,7 +48,7 @@ ColumnHead<std::string>* TableHead::getStringColumn(int col) {
     if (columns[col]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
         return (ColumnHead<std::string>*)(columns[col]);
     } else {
-        exit(1);
+        return NULL;
     }
 }
 
@@ -56,7 +56,7 @@ ColumnHead<double>* TableHead::getDoubleColumn(int col) {
     if (columns[col]->getTypeName() == "d") {
         return (ColumnHead<double>*)(columns[col]);
     } else {
-        exit(1);
+        return NULL;
     }
 }
 
@@ -64,7 +64,7 @@ ColumnHead<bool>* TableHead::getBoolColumn(int col) {
     if (columns[col]->getTypeName() == "b") {
         return (ColumnHead<bool>*)(columns[col]);
     } else {
-        exit(1);
+        return NULL;
     }
 }
 
@@ -74,8 +74,7 @@ BaseColumn* TableHead::getColumn(std::string colName) {
             return column;
         }
     }
-    std::cout << "Cannot find column\n";
-    exit(1);
+    return NULL;
 }
 
 void TableHead::writeToFile() {
