@@ -34,14 +34,10 @@ void ErrorScan::addRow() {
     }
 
     Token tkn = previous();
-    std::cout << "Columns index 0 type is " << head->columns[0]->getTypeName() << "Token type is " << tkn.type << '\n';
     int i = 0;
     while ((tkn = advance()).type != RIGHT_PAREN) {
         if (i >= head->columns.size()) {
-            if ((peek().type != INT_TYPE) && (peek().type != DOUBLE) && (peek().type != LITERAL) && (peek().type != TRUE) && (peek().type != FALSE)) {
-                throw ParseError(tkn, "Expected ')'.", lines, current - tkn.value.size(), current);
-            }
-            throw ParseError(tkn, "Too many arguments in row call.", lines, current - tkn.value.size(), current);
+            throw ParseError(tkn, "Expected ')'.", lines, current - tkn.value.size(), current);
         }
         if (head->columns[i]->getTypeName() == "i") {
             if (tkn.type != INT_TYPE) {
@@ -65,8 +61,6 @@ void ErrorScan::addRow() {
     if (i != head->columns.size()) {
         throw ParseError(tkn, "Too few arguments in row call.", lines, current - tkn.value.size(), current);
     }
-    current--;
-    consume(RIGHT_PAREN, "Expected ')'.");
 }
 
 void ErrorScan::getElement() {
@@ -99,28 +93,26 @@ void ErrorScan::editRow() {
     }
 
     Token tkn = previous();
-    std::cout << "Columns index 0 type is " << head->columns[0]->getTypeName() << "Token type is " << tkn.type << '\n';
     int i = 0;
     while ((tkn = advance()).type != RIGHT_PAREN) {
         if (i >= head->columns.size()) {
-            std::cout << head->columns[0]->rowLen() << '\n';
-            throw ParseError(tkn, "Too many arguments in row call.", lines, current - tkn.value.size(), current);
+            throw ParseError(tkn, "Expected ')'.", lines, current - tkn.value.size(), current);
         }
         if (head->columns[i]->getTypeName() == "i") {
             if (tkn.type != INT_TYPE) {
-                throw ParseError(tkn, "Expected type 'INT', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'INT', got '" + getTypeString(tkn.type) + "' instead.", lines, current - tkn.value.size(), current);
             }
         } else if (head->columns[i]->getTypeName() == "d") {
             if (tkn.type != DOUBLE_TYPE) {
-                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "' instead.", lines, current - tkn.value.size(), current);
             }
         } else if (head->columns[i]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
             if (tkn.type != LITERAL) {
-                throw ParseError(tkn, "Expected type 'STRING', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'STRING', got '" + getTypeString(tkn.type) + "' instead.", lines, current - tkn.value.size(), current);
             }        
         } else if (head->columns[i]->getTypeName() == "b") {
             if (tkn.type != BOOL) {
-                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "'.", lines, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "' instead.", lines, current - tkn.value.size(), current);
             }        
         }
         i++;
