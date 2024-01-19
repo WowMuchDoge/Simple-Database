@@ -31,6 +31,10 @@ class ErrorScan {
         void addColumn();
         void getElement();
 
+        void editRow();
+        void removeColumn();
+        void removeRow();
+
         void consume(TokenType type, std::string msg);
 
         std::vector<std::string> lines;
