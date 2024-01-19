@@ -116,6 +116,7 @@ void Parser::removeRow() {
 }
 
 void Parser::parse() {
+    current = 0;
     while (!isAtEnd()) {
         switch(advance().type) {
             case ADD_COLUMN: addColumn(); break;
