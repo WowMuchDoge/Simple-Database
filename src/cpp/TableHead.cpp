@@ -77,8 +77,8 @@ BaseColumn* TableHead::getColumn(std::string colName) {
     return NULL;
 }
 
-void TableHead::writeToFile() {
-    std::ofstream file("database.txt");
+void TableHead::writeToFile(std::string fileName) {
+    std::ofstream file(fileName);
     for (BaseColumn* column : columns) {
             if (column->getTypeName() == "i") {
                 file << "ADD_COLUMN(INT " << column->getName() << ")";

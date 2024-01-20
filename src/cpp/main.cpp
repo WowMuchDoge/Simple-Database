@@ -59,8 +59,9 @@ void runCLI() {
         std::getline(std::cin, txt);
         if (txt == "help") {
             std::cout << "Help stuff\n";
-        } else if (txt == "save") {
-            head.writeToFile();
+        } else if (txt.substr(0, 3) == std::string("save").substr(0, 3)) {
+            std::string filename = txt.substr(4, txt.size() - 1);
+            head.writeToFile(filename);
         } else if (txt == "exit") {
             break;
         } else if (txt == "\0") {
@@ -81,7 +82,7 @@ void runFile(char* filename) {
     }
 
     file.close();
-    head.writeToFile();
+    head.writeToFile("database.txt");
 }
 
 int main(int argc, char** argv) {
