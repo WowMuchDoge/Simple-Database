@@ -4,7 +4,7 @@ ParseError::ParseError(Token token, std::string message, std::vector<std::string
     std::string lNum = std::to_string(token.line);
     std::string s1 = "  ";
     std::string s2;
-    int dif = 4- lNum.size();
+    int dif = 4 - lNum.size();
     s1 += lNum;
     for (int i = 0; i < dif; i++) {
         s1 += " ";
@@ -21,7 +21,7 @@ ParseError::ParseError(Token token, std::string message, std::vector<std::string
         s2 += "~";
     }
 
-    str = "\nParsing error: " + message + "\n" + s1 + lines[token.line - 1] + "\n" + s2 + "\n";
+    str = "\nParsing error: " + message + "\n" + s1 + lines[0] + "\n" + s2 + "\n";
 
     eIndex = endIndex;
     sIndex = startIndex;

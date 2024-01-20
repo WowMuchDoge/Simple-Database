@@ -24,7 +24,7 @@ void Scanner::setText(std::string txt) {
 
 
 
-std::vector<Token> Scanner::scanTokens(std::string fileName) {
+std::vector<Token> Scanner::scanTokens(std::string fileName, int rLine) {
     tokens.clear();
     int line = 1;
     bool doubleState = false;
@@ -34,19 +34,19 @@ std::vector<Token> Scanner::scanTokens(std::string fileName) {
         start = current;
         c = source[current];
         switch(c) {
-            case '(': tokens.push_back(Token("(", LEFT_PAREN, line, current)); current++; break;
-            case ')': tokens.push_back(Token(")", RIGHT_PAREN, line, current)); current++; break;
-            case '\n': line++; current++;
+            case '(': tokens.push_back(Token("(", LEFT_PAREN, rLine, current)); current++; break;
+            case ')': tokens.push_back(Token(")", RIGHT_PAREN, rLine, current)); current++; break;
+            case '\n': line++; current++; break;
             case ' ':
             case '\r':
             case '\t': current++; break;
             case '"':
                 while (source[++current] != '"') {
                     if (source[current] == '\0') {
-                        throw LexError("Unterminated string.", line, start, current - 1, lines[line - 1]);
+                        throw LexError("Unterminated string.", rLine, start, current - 1, lines[line - 1]);
                     }
                 }
-                tokens.push_back(Token(source.substr(start, current - start + 1), LITERAL, line, start));
+                tokens.push_back(Token(source.substr(start, current - start + 1), LITERAL, rLine, start));
                 current++;
                 break;
             default:
@@ -54,10 +54,10 @@ std::vector<Token> Scanner::scanTokens(std::string fileName) {
                     while (isAlpha(source[++current]));
                     auto pos = keywords.find(source.substr(start, current - start));
                     if (pos == keywords.end()) {
-                        throw LexError(("Unknown identifier '" + source.substr(start, current - start) + "'."), line, start, current - 1, lines[line - 1]);
+                        throw LexError(("Unknown identifier '" + source.substr(start, current - start) + "'."), rLine, start, current - 1, lines[line - 1]);
                         break;
                     }
-                    tokens.push_back(Token(pos->first, pos->second, line, start));
+                    tokens.push_back(Token(pos->first, pos->second, rLine, start));
                     break;
                 } else if (isDigit(c)) {
                     while (isDigit(source[++current]));
@@ -65,15 +65,15 @@ std::vector<Token> Scanner::scanTokens(std::string fileName) {
                         while (isDigit(source[++current]));
                         doubleState = true;
                     }
-                    tokens.push_back(Token(source.substr(start, current - start), (doubleState ? DOUBLE_TYPE : INT_TYPE), line, start));
+                    tokens.push_back(Token(source.substr(start, current - start), (doubleState ? DOUBLE_TYPE : INT_TYPE), rLine, start));
                     break;
                 } else {
-                    throw LexError(("Unknown symbol '" + std::string(1, source[current]) + "'."), line, current, current, lines[line - 1]);
+                    throw LexError(("Unknown symbol '" + std::string(1, source[current]) + "'."), rLine, current, current, lines[line - 1]);
                 }
                 break;
         }
     }
-    tokens.push_back(Token("", END_OF_TEXT, line, current));
+    tokens.push_back(Token("", END_OF_TEXT, rLine, current));
     return tokens;
 }
 
@@ -87,7 +87,7 @@ void Scanner::setLines() {
     std::string ln;
     while (getline(src, ln)) {
         lines.push_back(ln);
-        std::cout << ln << '\n';
+        std::cout << ln << "sdfj" << '\n';
     }
 }
 
