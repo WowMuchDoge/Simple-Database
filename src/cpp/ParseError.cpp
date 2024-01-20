@@ -1,6 +1,6 @@
 #include  "../include/ParseError.h"
 
-ParseError::ParseError(Token token, std::string message, std::vector<std::string> lines, int startIndex, int endIndex) {
+ParseError::ParseError(Token token, std::string message, std::string line, int startIndex, int endIndex) {
     std::string lNum = std::to_string(token.line);
     std::string s1 = "  ";
     std::string s2;
@@ -21,7 +21,7 @@ ParseError::ParseError(Token token, std::string message, std::vector<std::string
         s2 += "~";
     }
 
-    str = "\nParsing error: " + message + "\n" + s1 + lines[0] + "\n" + s2 + "\n";
+    str = "\nParsing error: " + message + "\n" + s1 + line + "\n" + s2 + "\n";
 
     eIndex = endIndex;
     sIndex = startIndex;

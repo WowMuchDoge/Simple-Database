@@ -44,7 +44,7 @@ void run(std::string input) {
     }
 
     try {
-        ErrorScan eScan(tokens, &head, scanner.getLines());
+        ErrorScan eScan(tokens, &head, input);
         eScan.checkTokens();
     } catch (ParseError error) {
         tokens.erase(tokens.begin() + sIndex, tokens.begin() + eIndex - 1);
