@@ -52,7 +52,7 @@ void ErrorScan::addRow() {
                 throw ParseError(tkn, "Expected type 'STRING', got '" + getTypeString(tkn.type) + "' instead.", line, current - tkn.value.size(), current);
             }        
         } else if (head->columns[i]->getTypeName() == "b") {
-            if (tkn.type != BOOL) {
+            if (tkn.type != TRUE && tkn.type != FALSE) {
                 throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "' instead.", line, current - tkn.value.size(), current);
             }        
         }

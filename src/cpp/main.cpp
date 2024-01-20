@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstring>
 #include <cstring>
+#include <memory>
 
 #include "../include/ColumnHead.h"
 #include "../include/TableHead.h"
@@ -13,29 +14,24 @@
 #include "../include/LexError.h"
 #include "../include/ErrorScan.h"
 
-std::vector<Token> tokens;
+void runFile(int argc, char** args);
+
 std::vector<Token> tokens;
 TableHead head;
 
 Scanner scanner("");
 Parser parser(tokens, &head);
-Scanner scanner("");
-Parser parser(tokens, &head);
 
 bool hadError = false;
-
 int rLine = 1;
 
 void run(std::string input, std::string file) {
-void run(std::string input, std::string file) {
     scanner.setText(input);
     scanner.setLines();
-    int sIndex = tokens.size();
 
     try {
         tokens = scanner.scanTokens("<stdin>", rLine);
     } catch (LexError error) {
-        std::cout << "In file " << file;
         std::cout << "In file " << file;
         std::cout << error.getMessage();
         hadError = true;
@@ -54,15 +50,12 @@ void run(std::string input, std::string file) {
     } catch (ParseError error) {
         tokens.clear();
         std::cout << "In file " << file;
-        tokens.clear();
-        std::cout << "In file " << file;
         std::cout << error.getMessage();
         hadError = true;
         return;
     }
 
     parser.setInput(tokens);
-    tokens.clear();
     tokens.clear();
     parser.parse();
 }
@@ -77,20 +70,31 @@ void runCLI() {
             std::cout << "Help stuff\n";
         } else if (txt.substr(0, 3) == std::string("save").substr(0, 3)) {
             std::cout << txt.size() << '\n';
-            std::string filename = txt.substr(4, txt.size() - 2);
-            std::string filename = txt.substr(4, txt.size() - 2);
+            std::string filename = txt.substr(5, txt.size() - 2);
             if (txt.size() < 6) {
                 std::cout << "Need file name to save to.\n";
                 break;
             }
             head.writeToFile(filename + ".txt");
+        } else if (txt.substr(0, 3) == std::string("load").substr(0, 3)) {
+            std::cout << txt.size() << '\n';
+            std::string filename = txt.substr(5, txt.size() - 2);
+            if (txt.size() < 6) {
+                std::cout << "Need file name to load from to.\n";
+                break;
+            }
+            char* el1 = (char*)malloc(2 * sizeof(char));
+            char* file = (char*)malloc(100 * sizeof(char));
+            const char** list = (const char**)malloc(2 * sizeof(char*));
+            list[0] = "";
+            list[1] = filename.c_str();
+            runFile(2, (char**)list);
         } else if (txt == "exit") {
             break;
         } else if (txt == "\0") {
             std::cout << '\n';
             break;
         } else {
-            run(txt, "<stdin>");
             run(txt, "<stdin>");
         }
     }
@@ -113,14 +117,11 @@ void runFile(int argc, char** args) {
     if (!file.is_open()) {
         std::cout << "Comand-line Error: File '" + std::string(args[1]) + "' cannot open.\n" << std::strerror(errno) << std::endl;;
         file.close();
-        std::cout << "Comand-line Error: File '" + std::string(args[1]) + "' cannot open.\n" << std::strerror(errno) << std::endl;;
-        file.close();
         exit(56);
     }
 
     while (std::getline(file, line)) {
-        run(line, args[1]);
-        run(line, args[1]);
+        run(line, "'" + std::string(args[1]) + "'");
         rLine++;
     }
 
@@ -150,4 +151,4 @@ int main(int argc, char** argv) {
 //     }
 
 //     std::cout << tokens[0].type << '\n';
-// }
+// }scanner.scanTokens

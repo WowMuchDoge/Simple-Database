@@ -120,6 +120,5 @@ void TableHead::writeToFile(std::string fileName) {
         }
         file << ")\n";
     }
-    std::cout << "Got to close case so idk why the fuck it doesnt work \n";
     file.close();
 }
