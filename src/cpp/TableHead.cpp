@@ -103,7 +103,7 @@ void TableHead::writeToFile(std::string fileName) {
             if (column->getTypeName() == "i") {
                 file << ((ColumnHead<int>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
             } else if (column->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
-                file << '"' << ((ColumnHead<std::string>*)column)->getElement(i) << '"' << (j == columns.size() - 1 ? "" : " ");
+                file << ((ColumnHead<std::string>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
             } else if (column->getTypeName() == "d") {
                 file << ((ColumnHead<double>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
             } else if (column->getTypeName() == "b") {
