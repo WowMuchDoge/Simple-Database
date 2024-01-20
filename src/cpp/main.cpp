@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <cstring>
 
 #include "../include/ColumnHead.h"
 #include "../include/TableHead.h"
@@ -11,27 +12,25 @@
 #include "../include/LexError.h"
 #include "../include/ErrorScan.h"
 
-std::string text = "";
-
-std::vector<Token> t;
+std::vector<Token> tokens;
 TableHead head;
 
-Scanner scanner(text);
-Parser parser(t, &head);
+Scanner scanner("");
+Parser parser(tokens, &head);
 
 bool hadError = false;
 
 int rLine = 1;
 
-void run(std::string input) {
+void run(std::string input, std::string file) {
     scanner.setText(input);
-    std::vector<Token> tokens;
     scanner.setLines();
     int sIndex = tokens.size();
 
     try {
         tokens = scanner.scanTokens("<stdin>", rLine);
     } catch (LexError error) {
+        std::cout << "In file " << file;
         std::cout << error.getMessage();
         hadError = true;
         return;
@@ -47,13 +46,15 @@ void run(std::string input) {
         ErrorScan eScan(tokens, &head, input);
         eScan.checkTokens();
     } catch (ParseError error) {
-        tokens.erase(tokens.begin() + sIndex, tokens.begin() + eIndex - 1);
+        tokens.clear();
+        std::cout << "In file " << file;
         std::cout << error.getMessage();
         hadError = true;
         return;
     }
 
     parser.setInput(tokens);
+    tokens.clear();
     parser.parse();
 }
 
@@ -67,7 +68,7 @@ void runCLI() {
             std::cout << "Help stuff\n";
         } else if (txt.substr(0, 3) == std::string("save").substr(0, 3)) {
             std::cout << txt.size() << '\n';
-            std::string filename = txt.substr(4, txt.size() - 1);
+            std::string filename = txt.substr(4, txt.size() - 2);
             if (txt.size() < 6) {
                 std::cout << "Need file name to save to.\n";
                 break;
@@ -79,7 +80,7 @@ void runCLI() {
             std::cout << '\n';
             break;
         } else {
-            run(txt);
+            run(txt, "<stdin>");
         }
     }
 }
@@ -99,18 +100,19 @@ void runFile(int argc, char** args) {
     std::string sLines;
 
     if (!file.is_open()) {
-        std::cout << "Comand-line Error: File cannot open.\n";
+        std::cout << "Comand-line Error: File '" + std::string(args[1]) + "' cannot open.\n" << std::strerror(errno) << std::endl;;
+        file.close();
         exit(56);
     }
 
     while (std::getline(file, line)) {
-        run(line);
+        run(line, args[1]);
         rLine++;
     }
 
-    std::cout << sLines;
-
     file.close();
+
+    std::cout << sLines;
 
     if (!hadError) {
         head.writeToFile(args[1]);

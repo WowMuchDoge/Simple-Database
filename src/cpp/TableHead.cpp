@@ -89,9 +89,9 @@ void TableHead::writeToFile(std::string fileName) {
             } else if (column->getTypeName() == "b") {
                 file << "ADD_COLUMN(BOOL " << column->getName() << ")";
             } else {
+                file.close();
                 exit(1);
             }
-        // file << column->getTypeName() << " " << column->getName() << " | ";
         file << " ";
     }
     file << '\n';
@@ -113,11 +113,13 @@ void TableHead::writeToFile(std::string fileName) {
                     file << "FALSE" << (j == columns.size() - 1 ? "" : " ");
                 }
             } else {
+                file.close();
                 exit(1);
             }
             j++;
         }
         file << ")\n";
     }
+    std::cout << "Got to close case so idk why the fuck it doesnt work \n";
     file.close();
 }
