@@ -2,6 +2,8 @@
 #include <sstream>
 
 #include "../include/Scanner.h"
+
+#include "../include/Constants.h"
 #include "../include/LexError.h"
 
 bool Scanner::isAtEnd() {
@@ -54,7 +56,7 @@ std::vector<Token> Scanner::scanTokens(std::string fileName, int rLine) {
                     while (isAlpha(source[++current]));
                     auto pos = keywords.find(source.substr(start, current - start));
                     if (pos == keywords.end()) {
-                        throw LexError(("Unknown identifier '" + source.substr(start, current - start) + "'."), rLine, start, current - 1, source);
+                        throw LexError(("Unknown identifier '" + BOLD + source.substr(start, current - start) + WHITE + "'."), rLine, start, current - 1, source);
                         break;
                     }
                     tokens.push_back(Token(pos->first, pos->second, rLine, start));
@@ -68,7 +70,7 @@ std::vector<Token> Scanner::scanTokens(std::string fileName, int rLine) {
                     tokens.push_back(Token(source.substr(start, current - start), (doubleState ? DOUBLE_TYPE : INT_TYPE), rLine, start));
                     break;
                 } else {
-                    throw LexError(("Unknown symbol '" + std::string(1, source[current]) + "'."), rLine, current, current, source);
+                    throw LexError(("Unknown symbol '" + BOLD + std::string(1, source[current]) + WHITE + "'."), rLine, current, current, source);
                 }
                 break;
         }

@@ -16,12 +16,12 @@ void ErrorScan::addColumn() {
     consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
 
     if ((advance().type != STRING) && (previous().type != INT) && (previous().type != DOUBLE) && (previous().type != BOOL)) {
-        throw ParseError(previous(), "Expected a type, got '" + previous().value + "' instead.", line, current - previous().value.size(), current);
+        throw ParseError(previous(), "Expected a type, got '" + BOLD + previous().value + WHITE + "' instead.", line, current - previous().value.size(), current);
     }
     if ((advance().type != LITERAL)) {
-        throw ParseError(previous(), "Expected a column name, got '" + previous().value + "' instead.", line, current - previous().value.size(), current);
+        throw ParseError(previous(), "Expected a column name, got '" + BOLD + previous().value + WHITE + "' instead.", line, current - previous().value.size(), current);
     } else if (head->getColumn(previous().value) != NULL) {
-        throw ParseError(previous(), "Column name '" + previous().value.substr(1, previous().value.size() - 2) + "' is already taken.", line, current - previous().value.size(), current);
+        throw ParseError(previous(), "Column name '" + BOLD + previous().value.substr(1, previous().value.size() - 2) + WHITE + "' is already taken.", line, current - previous().value.size(), current);
     }
 
     consume(RIGHT_PAREN, "Expected ')', got '" + peek().value + "' instead.");
@@ -42,19 +42,19 @@ void ErrorScan::addRow() {
         }
         if (head->columns[i]->getTypeName() == "i") {
             if (tkn.type != INT_TYPE) {
-                throw ParseError(tkn, "Expected type 'INT', got '" + getTypeString(tkn.type) + "' instead.", line, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'INT', got '" + BOLD + getTypeString(tkn.type) + BOLD + "' instead.", line, current - tkn.value.size(), current);
             }
         } else if (head->columns[i]->getTypeName() == "d") {
             if (tkn.type != DOUBLE_TYPE) {
-                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "' instead.", line, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + BOLD +getTypeString(tkn.type) + WHITE + "' instead.", line, current - tkn.value.size(), current);
             }
         } else if (head->columns[i]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
             if (tkn.type != LITERAL) {
-                throw ParseError(tkn, "Expected type 'STRING', got '" + getTypeString(tkn.type) + "' instead.", line, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'STRING', got '" + BOLD + getTypeString(tkn.type) + WHITE + "' instead.", line, current - tkn.value.size(), current);
             }        
         } else if (head->columns[i]->getTypeName() == "b") {
             if (tkn.type != TRUE && tkn.type != FALSE) {
-                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "' instead.", line, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + BOLD + getTypeString(tkn.type) + WHITE + "' instead.", line, current - tkn.value.size(), current);
             }        
         }
         i++;
@@ -67,30 +67,30 @@ void ErrorScan::addRow() {
 void ErrorScan::getElement() {
     consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
     if (advance().type != LITERAL) {
-        throw ParseError(previous(), "Expected a name, got '" + getTypeString(previous().type) + "' instead.", line, current - previous().value.size(), current);
+        throw ParseError(previous(), "Expected a name, got '" + BOLD + getTypeString(previous().type) + WHITE + "' instead.", line, current - previous().value.size(), current);
     } else {
         if (head->getColumn(previous().value) == NULL) {
-            throw ParseError(previous(), "Column '" + previous().value + "' not in table.", line, current - previous().value.size(), current);
+            throw ParseError(previous(), "Column '" + BOLD + previous().value + WHITE + "' not in table.", line, current - previous().value.size(), current);
         }
     }
     if (advance().type != INT_TYPE) {
-        throw ParseError(previous(), "Expected an index, got '" + getTypeString(previous().type) + "' instead.", line, current - previous().value.size(), current);
+        throw ParseError(previous(), "Expected an index, got '" + BOLD + getTypeString(previous().type) + BOLD + "' instead.", line, current - previous().value.size(), current);
     } else {
         if (std::stoi(previous().value) >= head->columns[0]->rowLen()) {
-            throw ParseError(previous(), "Index '" + previous().value + "' out of range.", line, current - previous().value.size(), current);
+            throw ParseError(previous(), "Index '" + BOLD + previous().value + WHITE + "' out of range.", line, current - previous().value.size(), current);
         }
     }
-    consume(RIGHT_PAREN, "Expected ')', got '" + previous().value + "' instead.");
+    consume(RIGHT_PAREN, "Expected ')', got '" + BOLD + previous().value + WHITE + "' instead.");
 }
 
 void ErrorScan::editRow() {
-    consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
+    consume(LEFT_PAREN, "Expected '(', got '" + BOLD + peek().value + WHITE + "' instead.");
 
     if (advance().type != INT_TYPE) {
-        throw ParseError(previous(), "Expected index, got '" + previous().value + "' instead.", line, current - previous().value.size(), current);
+        throw ParseError(previous(), "Expected index, got '" + BOLD + previous().value + WHITE + "' instead.", line, current - previous().value.size(), current);
     }
     if (std::stoi(previous().value) >= head->columns[0]->rowLen()) {
-        throw ParseError(previous(), "Index '" + previous().value + "' out of range.", line, current - previous().value.size(), current);
+        throw ParseError(previous(), "Index '" + BOLD + previous().value + WHITE + "' out of range.", line, current - previous().value.size(), current);
     }
 
     Token tkn = previous();
@@ -101,19 +101,19 @@ void ErrorScan::editRow() {
         }
         if (head->columns[i]->getTypeName() == "i") {
             if (tkn.type != INT_TYPE) {
-                throw ParseError(tkn, "Expected type 'INT', got '" + getTypeString(tkn.type) + "' instead.", line, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'INT', got '" + BOLD + getTypeString(tkn.type) + WHITE + "' instead.", line, current - tkn.value.size(), current);
             }
         } else if (head->columns[i]->getTypeName() == "d") {
             if (tkn.type != DOUBLE_TYPE) {
-                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "' instead.", line, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + BOLD + getTypeString(tkn.type) + WHITE + "' instead.", line, current - tkn.value.size(), current);
             }
         } else if (head->columns[i]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
             if (tkn.type != LITERAL) {
-                throw ParseError(tkn, "Expected type 'STRING', got '" + getTypeString(tkn.type) + "' instead.", line, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'STRING', got '" + BOLD + getTypeString(tkn.type) + WHITE + "' instead.", line, current - tkn.value.size(), current);
             }        
         } else if (head->columns[i]->getTypeName() == "b") {
             if (tkn.type != BOOL) {
-                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + getTypeString(tkn.type) + "' instead.", line, current - tkn.value.size(), current);
+                throw ParseError(tkn, "Expected type 'DOUBLE', got '" + BOLD + getTypeString(tkn.type) + WHITE + "' instead.", line, current - tkn.value.size(), current);
             }        
         }
         i++;
@@ -127,26 +127,26 @@ void ErrorScan::removeColumn() {
     consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
 
     if (advance().type != INT_TYPE) {
-        throw ParseError(previous(), "Expected index, got '" + previous().value + "' instead.", line, current - previous().value.size(), current);
+        throw ParseError(previous(), "Expected index, got '" + BOLD + previous().value + WHITE + "' instead.", line, current - previous().value.size(), current);
     }
     if (std::stoi(previous().value) >= head->columns.size()) {
-        throw ParseError(previous(), "Index '" + previous().value + "' out of range.", line, current - previous().value.size(), current);
+        throw ParseError(previous(), "Index '" + BOLD + previous().value + WHITE + "' out of range.", line, current - previous().value.size(), current);
     }
 
-    consume(RIGHT_PAREN, "Expected ')', got '" + peek().value + "' instead.");
+    consume(RIGHT_PAREN, "Expected ')', got '" + BOLD + peek().value + WHITE + "' instead.");
 }
 
 void ErrorScan::removeRow() {
-    consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
+    consume(LEFT_PAREN, "Expected '(', got '" + BOLD + peek().value + WHITE + "' instead.");
 
     if (advance().type != INT_TYPE) {
-        throw ParseError(previous(), "Expected index, got '" + previous().value + "' instead.", line, current - previous().value.size(), current);
+        throw ParseError(previous(), "Expected index, got '" + BOLD + previous().value + WHITE + "' instead.", line, current - previous().value.size(), current);
     }
     if (std::stoi(previous().value) >= head->columns[0]->rowLen()) {
-        throw ParseError(previous(), "Index '" + previous().value + "' out of range.", line, current - previous().value.size(), current);
+        throw ParseError(previous(), "Index '" + BOLD + previous().value + WHITE + "' out of range.", line, current - previous().value.size(), current);
     }
 
-    consume(RIGHT_PAREN, "Expected ')', got '" + peek().value + "' instead.");
+    consume(RIGHT_PAREN, "Expected ')', got '" + WHITE + peek().value + BOLD + "' instead.");
 }
 
 void ErrorScan::checkTokens() {
@@ -160,7 +160,7 @@ void ErrorScan::checkTokens() {
             case REMOVE_COLUMN: removeColumn(); break;
             case REMOVE_ROW: removeRow(); break;
             default:
-                break;
+                throw ParseError(previous(), "Expected method, got '" + BOLD + previous().value + WHITE + "' instead.", line, current - previous().value.size(), current);
         }
     }
 }

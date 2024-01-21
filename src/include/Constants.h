@@ -12,6 +12,11 @@
 
 #define FILE_NOT_OPEN 40
 
+#define WHITE std::string("\e[0;37m")
+#define RED std::string("\e[0;31m")
+#define BOLD std::string("\e[1;37m")
+#define BOLD_RED std::string("\e[1;31m")
+
 namespace StringConstants {
     const std::string helpText = "\n                == COMMANDS ==\n\n"
     "save <filename>: Save current database state to a text file\n"
