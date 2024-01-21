@@ -80,46 +80,48 @@ BaseColumn* TableHead::getColumn(std::string colName) {
 
 void TableHead::writeToFile(std::string fileName) {
     std::ofstream file(fileName);
-    for (BaseColumn* column : columns) {
-            if (column->getTypeName() == "i") {
-                file << "ADD_COLUMN(INT " << column->getName() << ")";
-            } else if (column->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
-                file << "ADD_COLUMN(STRING " << column->getName() << ")";
-            } else if (column->getTypeName() == "d") {
-                file << "ADD_COLUMN(DOUBLE " << column->getName() << ")";
-            } else if (column->getTypeName() == "b") {
-                file << "ADD_COLUMN(BOOL " << column->getName() << ")";
-            } else {
-                file.close();
-                exit(UNKOWN_TYPE);
-            }
-        file << " ";
-    }
-    file << '\n';
-    int j = 0;
-    for (int i = 0; i < columns[0]->rowLen(); i++) {
-        file << "ADD_ROW(";
-        j = 0;
+    if (columns.size() > 0) {
         for (BaseColumn* column : columns) {
-            if (column->getTypeName() == "i") {
-                file << ((ColumnHead<int>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
-            } else if (column->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
-                file << ((ColumnHead<std::string>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
-            } else if (column->getTypeName() == "d") {
-                file << ((ColumnHead<double>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
-            } else if (column->getTypeName() == "b") {
-                if (((ColumnHead<bool>*)column)->getElement(i) == true) {
-                    file << "TRUE" << (j == columns.size() - 1 ? "" : " ");
-                } else if (((ColumnHead<bool>*)column)->getElement(i) == false) {
-                    file << "FALSE" << (j == columns.size() - 1 ? "" : " ");
+                if (column->getTypeName() == "i") {
+                    file << "ADD_COLUMN(INT " << column->getName() << ")";
+                } else if (column->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+                    file << "ADD_COLUMN(STRING " << column->getName() << ")";
+                } else if (column->getTypeName() == "d") {
+                    file << "ADD_COLUMN(DOUBLE " << column->getName() << ")";
+                } else if (column->getTypeName() == "b") {
+                    file << "ADD_COLUMN(BOOL " << column->getName() << ")";
+                } else {
+                    file.close();
+                    exit(UNKOWN_TYPE);
                 }
-            } else {
-                file.close();
-                exit(UNKOWN_TYPE);
-            }
-            j++;
+            file << " ";
         }
-        file << ")\n";
+        file << '\n';
+        int j = 0;
+        for (int i = 0; i < columns[0]->rowLen(); i++) {
+            file << "ADD_ROW(";
+            j = 0;
+            for (BaseColumn* column : columns) {
+                if (column->getTypeName() == "i") {
+                    file << ((ColumnHead<int>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
+                } else if (column->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+                    file << ((ColumnHead<std::string>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
+                } else if (column->getTypeName() == "d") {
+                    file << ((ColumnHead<double>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
+                } else if (column->getTypeName() == "b") {
+                    if (((ColumnHead<bool>*)column)->getElement(i) == true) {
+                        file << "TRUE" << (j == columns.size() - 1 ? "" : " ");
+                    } else if (((ColumnHead<bool>*)column)->getElement(i) == false) {
+                        file << "FALSE" << (j == columns.size() - 1 ? "" : " ");
+                    }
+                } else {
+                    file.close();
+                    exit(UNKOWN_TYPE);
+                }
+                j++;
+            }
+            file << ")\n";
+        }
     }
     file.close();
 }

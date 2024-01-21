@@ -38,7 +38,7 @@ void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner,
         eScan.checkTokens();
     } catch (ParseError error) {
         tokens.clear();
-        std::cout << "In file " << file;
+        std::cout << BOLD + "In file " << file;
         std::cout << error.getMessage();
         return;
     }
@@ -56,14 +56,14 @@ void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, 
         std::getline(std::cin, txt);
         if (txt == "help") {
             std::cout << StringConstants::helpText;
-        } else if (txt.substr(0, 3) == std::string("save").substr(0, 3)) {
+        } else if (txt.substr(0, 4) == std::string("save").substr(0, 4)) {
             std::string filename = txt.substr(5, txt.size() - 2);
             if (txt.size() < 6) {
                 std::cout << "Need file name to save to.\n";
                 break;
             }
             head->writeToFile(filename + ".txt");
-        } else if (txt.substr(0, 3) == std::string("load").substr(0, 3)) {
+        } else if (txt.substr(0, 4) == std::string("load").substr(0, 4)) {
             std::string filename = txt.substr(5, txt.size() - 2);
             if (txt.size() < 6) {
                 std::cout << "Need file name to load from to.\n";
