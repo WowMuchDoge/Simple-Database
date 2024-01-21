@@ -13,6 +13,7 @@
 #include "../include/Token.h"
 #include "../include/LexError.h"
 #include "../include/ErrorScan.h"
+#include "../include/HelpText.h"
 
 void runFile(int argc, char** args);
 
@@ -67,7 +68,7 @@ void runCLI() {
         std::cout << ">>>";
         std::getline(std::cin, txt);
         if (txt == "help") {
-            std::cout << "Help stuff\n";
+            std::cout << helpText;
         } else if (txt.substr(0, 3) == std::string("save").substr(0, 3)) {
             std::cout << txt.size() << '\n';
             std::string filename = txt.substr(5, txt.size() - 2);
@@ -83,8 +84,6 @@ void runCLI() {
                 std::cout << "Need file name to load from to.\n";
                 break;
             }
-            char* el1 = (char*)malloc(2 * sizeof(char));
-            char* file = (char*)malloc(100 * sizeof(char));
             const char** list = (const char**)malloc(2 * sizeof(char*));
             list[0] = "";
             list[1] = filename.c_str();
@@ -93,7 +92,7 @@ void runCLI() {
             break;
         } else if (txt == "\0") {
             std::cout << '\n';
-            break;
+            break;    
         } else {
             run(txt, "<stdin>");
         }
