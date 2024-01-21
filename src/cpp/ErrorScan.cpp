@@ -6,9 +6,10 @@ ErrorScan::ErrorScan(std::vector<Token> tkns, TableHead* hd, std::string ln) : t
 
 static std::string getTypeString(TokenType type) {
     if (type == INT_TYPE) return "INT";
-    if (type == LITERAL) return "STRING";
-    if (type == TRUE || true == FALSE) return "BOOL";
-    if (type == DOUBLE_TYPE) return "DOUBLE";
+    else if (type == LITERAL) return "STRING";
+    else if (type == TRUE || true == FALSE) return "BOOL";
+    else if (type == DOUBLE_TYPE) return "DOUBLE";
+    else return "UNKOWN_TYPE";
 }
 
 void ErrorScan::addColumn() {

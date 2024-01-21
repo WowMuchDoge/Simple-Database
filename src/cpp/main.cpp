@@ -14,17 +14,15 @@
 #include "../include/ErrorScan.h"
 #include "../include/HelpText.h"
 
-void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser);
+void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head);
 
 std::vector<Token> tokens;
-TableHead head;
 
 bool hadError = false;
 int rLine = 1;
 
-void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser) {
+void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head) {
     scanner->setText(input);
-    scanner->setLines();
 
     try {
         tokens = scanner->scanTokens("<stdin>", rLine);
@@ -37,12 +35,8 @@ void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner,
 
     int eIndex = tokens.size() - 1;
 
-    for (Token token : tokens) {
-        std::cout << token.value << '\n';
-    }
-
     try {
-        ErrorScan eScan(tokens, &head, input);
+        ErrorScan eScan(tokens, head.get(), input);
         eScan.checkTokens();
     } catch (ParseError error) {
         tokens.clear();
@@ -57,7 +51,7 @@ void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner,
     parser->parse();
 }
 
-void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser) {
+void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head) {
     std::cout << "You have now entered command line mode\nType " << '"' << "help" << '"' << " for more information\n";
     while (true) {
         std::string txt;
@@ -66,15 +60,13 @@ void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser) 
         if (txt == "help") {
             std::cout << helpText;
         } else if (txt.substr(0, 3) == std::string("save").substr(0, 3)) {
-            std::cout << txt.size() << '\n';
             std::string filename = txt.substr(5, txt.size() - 2);
             if (txt.size() < 6) {
                 std::cout << "Need file name to save to.\n";
                 break;
             }
-            head.writeToFile(filename + ".txt");
+            head->writeToFile(filename + ".txt");
         } else if (txt.substr(0, 3) == std::string("load").substr(0, 3)) {
-            std::cout << txt.size() << '\n';
             std::string filename = txt.substr(5, txt.size() - 2);
             if (txt.size() < 6) {
                 std::cout << "Need file name to load from to.\n";
@@ -83,7 +75,7 @@ void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser) 
             const char** list = (const char**)malloc(2 * sizeof(char*));
             list[0] = "";
             list[1] = filename.c_str();
-            runFile(2, (char**)list, scanner, parser);
+            runFile(2, (char**)list, scanner, parser, head);
             free(list);
         } else if (txt == "exit") {
             break;
@@ -91,12 +83,12 @@ void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser) 
             std::cout << '\n';
             break;    
         } else {
-            run(txt, "<stdin>", scanner, parser);
+            run(txt, "<stdin>", scanner, parser, head);
         }
     }
 }
 
-void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser) {
+void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head) {
 
     if (argc > 2) {
         std::cout << "Comand-line Error: Too many arguments provided.\n";
@@ -117,22 +109,21 @@ void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::uniq
     }
 
     while (std::getline(file, line)) {
-        run(line, "'" + std::string(args[1]) + "'", scanner, parser);
+        run(line, "'" + std::string(args[1]) + "'", scanner, parser, head);
         rLine++;
     }
 
     file.close();
-
-    std::cout << sLines;
 }
 
 int main(int argc, char** argv) {
+    std::unique_ptr<TableHead> head = std::make_unique<TableHead>();
     std::unique_ptr<Scanner> scanner = std::make_unique<Scanner>("");
-    std::unique_ptr<Parser> parser = std::make_unique<Parser>(tokens, &head);
+    std::unique_ptr<Parser> parser = std::make_unique<Parser>(tokens, head.get());
     if (argc == 1) {
-        runCLI(scanner, parser);
+        runCLI(scanner, parser, head);
     } else if (argc == 2) {
-        runFile(argc, argv, scanner, parser);
+        runFile(argc, argv, scanner, parser, head);
     } else {
         exit(1);
     }

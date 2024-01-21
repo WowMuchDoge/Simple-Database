@@ -15,7 +15,7 @@ bool Scanner::isAlpha(char c) {
 }
 
 bool Scanner::isDigit(char c) {
-    return c >= '0' && c <= '9';
+    return (c >= '0' && c <= '9') || c == '-';
 }
 
 void Scanner::setText(std::string txt) {
@@ -87,7 +87,6 @@ void Scanner::setLines() {
     std::string ln;
     while (getline(src, ln)) {
         lines.push_back(ln);
-        std::cout << ln << "sdfj" << '\n';
     }
 }
 
