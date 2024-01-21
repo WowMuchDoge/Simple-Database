@@ -19,22 +19,11 @@ class Scanner {
 
         std::map<std::string, TokenType> keywords;
 
-        char advance();
-        char peek();
-        char previous();
         bool isAtEnd();
 
-        void addToken(TokenType type);
-        void addToken(std::string val);
-        void addToken(TokenType type, std::string str);
 
         bool isAlpha(char c);
         bool isDigit(char c);
-
-        void number();
-        void identifier();
-
-        void string();
 
         std::vector<std::string> lines;
     public:
@@ -53,10 +42,7 @@ class Scanner {
             keywords["EDIT_ROW"] = EDIT_ROW;
         }
 
-        std::vector<Token> scanTokens(std::string fileName, int line);
+        std::vector<Token> scanTokens(int line);
 
         void setText(std::string txt);
-        std::vector<std::string> getLines();
-        void setLines();
-        std::vector<Token>* getTokens();
 };

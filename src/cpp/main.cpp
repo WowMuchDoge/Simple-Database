@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 #include <cstring>
-#include <cstring>
 #include <memory>
 
+#include "../include/Constants.h"
 #include "../include/ColumnHead.h"
 #include "../include/TableHead.h"
 #include "../include/Scanner.h"
@@ -14,141 +14,106 @@
 #include "../include/LexError.h"
 #include "../include/ErrorScan.h"
 
-void runFile(int argc, char** args);
+void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head);
 
 std::vector<Token> tokens;
-TableHead head;
 
-Scanner scanner("");
-Parser parser(tokens, &head);
-
-bool hadError = false;
 int rLine = 1;
 
-void run(std::string input, std::string file) {
-    scanner.setText(input);
-    scanner.setLines();
+void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head) {
+    scanner->setText(input);
 
     try {
-        tokens = scanner.scanTokens("<stdin>", rLine);
+        tokens = scanner->scanTokens(rLine);
     } catch (LexError error) {
-        std::cout << "In file " << file;
+        std::cout << BOLD + "In file " << file;
         std::cout << error.getMessage();
-        hadError = true;
         return;
     }
 
     int eIndex = tokens.size() - 1;
 
-    for (Token token : tokens) {
-        std::cout << token.value << '\n';
-    }
-
     try {
-        ErrorScan eScan(tokens, &head, input);
+        ErrorScan eScan(tokens, head.get(), input);
         eScan.checkTokens();
     } catch (ParseError error) {
         tokens.clear();
-        std::cout << "In file " << file;
+        std::cout << BOLD + "In file " << file;
         std::cout << error.getMessage();
-        hadError = true;
         return;
     }
 
-    parser.setInput(tokens);
+    parser->setInput(tokens);
     tokens.clear();
-    parser.parse();
+    parser->parse();
 }
 
-void runCLI() {
+void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head) {
     std::cout << "You have now entered command line mode\nType " << '"' << "help" << '"' << " for more information\n";
     while (true) {
         std::string txt;
         std::cout << ">>>";
         std::getline(std::cin, txt);
         if (txt == "help") {
-            std::cout << "Help stuff\n";
-        } else if (txt.substr(0, 3) == std::string("save").substr(0, 3)) {
-            std::cout << txt.size() << '\n';
+            std::cout << StringConstants::helpText;
+        } else if (txt.substr(0, 4) == std::string("save").substr(0, 4)) {
             std::string filename = txt.substr(5, txt.size() - 2);
             if (txt.size() < 6) {
                 std::cout << "Need file name to save to.\n";
                 break;
             }
-            head.writeToFile(filename + ".txt");
-        } else if (txt.substr(0, 3) == std::string("load").substr(0, 3)) {
-            std::cout << txt.size() << '\n';
+            head->writeToFile(filename);
+        } else if (txt.substr(0, 4) == std::string("load").substr(0, 4)) {
             std::string filename = txt.substr(5, txt.size() - 2);
             if (txt.size() < 6) {
                 std::cout << "Need file name to load from to.\n";
                 break;
             }
-            char* el1 = (char*)malloc(2 * sizeof(char));
-            char* file = (char*)malloc(100 * sizeof(char));
             const char** list = (const char**)malloc(2 * sizeof(char*));
             list[0] = "";
             list[1] = filename.c_str();
-            runFile(2, (char**)list);
+            runFile(2, (char**)list, scanner, parser, head);
+            free(list);
         } else if (txt == "exit") {
             break;
         } else if (txt == "\0") {
             std::cout << '\n';
-            break;
+            break;    
         } else {
-            run(txt, "<stdin>");
+            run(txt, "<stdin>", scanner, parser, head);
         }
     }
 }
 
-void runFile(int argc, char** args) {
-
-    if (argc > 2) {
-        std::cout << "Comand-line Error: Too many arguments provided.\n";
-        exit(54);
-    } else if (argc < 2) {
-        std::cout << "Comand-line Error: Too few arguments provided.\n";
-        exit(55);
-    }
-
+void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head) {
     std::ifstream file(args[1]);
     std::string line;
     std::string sLines;
 
     if (!file.is_open()) {
-        std::cout << "Comand-line Error: File '" + std::string(args[1]) + "' cannot open.\n" << std::strerror(errno) << std::endl;;
+        std::cout << "Comand-line Error: Cannot open file '" + std::string(args[1]) + "'.\n" << std::strerror(errno) << std::endl;
         file.close();
-        exit(56);
+        exit(FILE_NOT_OPEN);
     }
 
     while (std::getline(file, line)) {
-        run(line, "'" + std::string(args[1]) + "'");
+        run(line, "'" + std::string(args[1]) + "'", scanner, parser, head);
         rLine++;
     }
 
     file.close();
-
-    std::cout << sLines;
 }
 
 int main(int argc, char** argv) {
+    std::unique_ptr<TableHead> head = std::make_unique<TableHead>();
+    std::unique_ptr<Scanner> scanner = std::make_unique<Scanner>("");
+    std::unique_ptr<Parser> parser = std::make_unique<Parser>(tokens, head.get());
     if (argc == 1) {
-        runCLI();
+        runCLI(scanner, parser, head);
     } else if (argc == 2) {
-        runFile(argc, argv);
-    } else {
-        exit(1);
+        runFile(argc, argv, scanner, parser, head);
+    } else if (argc > 2) {
+        std::cout << "Comand-line Error: Too many arguments provided.\n";
+        exit(MANY_ARGS);
     }
 }
-
-// int main() {
-//     LexError error("Unknown identifier 'ADS_COLUMN'", 1, 0, 9, "ADS_COLUMN(poggers 'double')");
-//     Scanner scanner("sdifj(sjfd, sfkj)");
-//     try {
-//         std::vector<Token> tokens = scanner.scanTokens();
-//     } catch (LexError error) {
-//         std::cout << error.getMessage();
-//         break;
-//     }
-
-//     std::cout << tokens[0].type << '\n';
-// }scanner.scanTokens
