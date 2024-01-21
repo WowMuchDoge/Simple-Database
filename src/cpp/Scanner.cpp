@@ -26,7 +26,7 @@ void Scanner::setText(std::string txt) {
 
 
 
-std::vector<Token> Scanner::scanTokens(std::string fileName, int rLine) {
+std::vector<Token> Scanner::scanTokens(int rLine) {
     tokens.clear();
     int line = 1;
     bool doubleState = false;

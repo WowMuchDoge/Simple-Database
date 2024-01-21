@@ -2,7 +2,7 @@
 
 #include "../include/Constants.h"
 
-ParseError::ParseError(Token token, std::string message, std::string line, int startIndex, int endIndex) {
+ParseError::ParseError(Token token, std::string message, std::string line) {
     std::string lNum = std::to_string(token.line);
     std::string s1 = "  ";
     std::string s2;
@@ -28,9 +28,6 @@ ParseError::ParseError(Token token, std::string message, std::string line, int s
     s2 += WHITE;
 
     str = RED + "\nParsing error: " + WHITE + message + "\n" + s1 + errLine + "\n" + s2 + '\n';
-
-    eIndex = endIndex;
-    sIndex = startIndex;
 }
 
 
