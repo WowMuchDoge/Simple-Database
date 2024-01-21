@@ -62,7 +62,7 @@ void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, 
                 std::cout << "Need file name to save to.\n";
                 break;
             }
-            head->writeToFile(filename + ".txt");
+            head->writeToFile(filename);
         } else if (txt.substr(0, 4) == std::string("load").substr(0, 4)) {
             std::string filename = txt.substr(5, txt.size() - 2);
             if (txt.size() < 6) {
@@ -91,7 +91,7 @@ void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::uniq
     std::string sLines;
 
     if (!file.is_open()) {
-        std::cout << "Comand-line Error: Cannot open file '" + std::string(args[1]) + "'.\n" << std::strerror(errno) << std::endl;;
+        std::cout << "Comand-line Error: Cannot open file '" + std::string(args[1]) + "'.\n" << std::strerror(errno) << std::endl;
         file.close();
         exit(FILE_NOT_OPEN);
     }
