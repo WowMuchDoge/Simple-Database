@@ -2,12 +2,15 @@
 
 #include <string>
 
-#define FEW_ARGS 50
-#define MANY_ARGS 51
-#define UNKOWN_TYPE 53
-#define OUT_OF_RANGE 54
-#define FILE_NOT_OPEN 55
-#define UNKOWN_METHOD 56
+#define FEW_ARGS 10
+#define MANY_ARGS 11
+
+#define UNKOWN_TYPE 20
+#define UNKOWN_METHOD 21
+
+#define OUT_OF_RANGE 30
+
+#define FILE_NOT_OPEN 40
 
 namespace StringConstants {
     const std::string helpText = "\n                == COMMANDS ==\n\n"
