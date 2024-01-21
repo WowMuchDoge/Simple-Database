@@ -56,7 +56,4 @@ class Scanner {
         std::vector<Token> scanTokens(std::string fileName, int line);
 
         void setText(std::string txt);
-        std::vector<std::string> getLines();
-        void setLines();
-        std::vector<Token>* getTokens();
 };

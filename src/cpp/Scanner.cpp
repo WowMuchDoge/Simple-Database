@@ -43,7 +43,7 @@ std::vector<Token> Scanner::scanTokens(std::string fileName, int rLine) {
             case '"':
                 while (source[++current] != '"') {
                     if (source[current] == '\0') {
-                        throw LexError("Unterminated string.", rLine, start, current - 1, lines[line - 1]);
+                        throw LexError("Unterminated string.", rLine, start, current - 1, source);
                     }
                 }
                 tokens.push_back(Token(source.substr(start, current - start + 1), LITERAL, rLine, start));
@@ -54,7 +54,7 @@ std::vector<Token> Scanner::scanTokens(std::string fileName, int rLine) {
                     while (isAlpha(source[++current]));
                     auto pos = keywords.find(source.substr(start, current - start));
                     if (pos == keywords.end()) {
-                        throw LexError(("Unknown identifier '" + source.substr(start, current - start) + "'."), rLine, start, current - 1, lines[line - 1]);
+                        throw LexError(("Unknown identifier '" + source.substr(start, current - start) + "'."), rLine, start, current - 1, source);
                         break;
                     }
                     tokens.push_back(Token(pos->first, pos->second, rLine, start));
@@ -68,28 +68,11 @@ std::vector<Token> Scanner::scanTokens(std::string fileName, int rLine) {
                     tokens.push_back(Token(source.substr(start, current - start), (doubleState ? DOUBLE_TYPE : INT_TYPE), rLine, start));
                     break;
                 } else {
-                    throw LexError(("Unknown symbol '" + std::string(1, source[current]) + "'."), rLine, current, current, lines[line - 1]);
+                    throw LexError(("Unknown symbol '" + std::string(1, source[current]) + "'."), rLine, current, current, source);
                 }
                 break;
         }
     }
     tokens.push_back(Token("", END_OF_TEXT, rLine, current));
     return tokens;
-}
-
-std::vector<std::string> Scanner::getLines() {
-    return lines;
-}
-
-void Scanner::setLines() {
-    lines.clear();
-    std::istringstream src(source);
-    std::string ln;
-    while (getline(src, ln)) {
-        lines.push_back(ln);
-    }
-}
-
-std::vector<Token>* Scanner::getTokens() {
-    return &tokens;
 }

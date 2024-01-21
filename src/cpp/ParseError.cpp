@@ -11,7 +11,8 @@ ParseError::ParseError(Token token, std::string message, std::string line, int s
     }
     s1 += "|    ";
 
-    for (int i = 0; i < token.offset + 11; i++) {
+    s2 += "      |    ";
+    for (int i = 0; i < token.offset; i++) {
         s2 += " ";
     }
 
@@ -21,7 +22,7 @@ ParseError::ParseError(Token token, std::string message, std::string line, int s
         s2 += "~";
     }
 
-    str = "\nParsing error: " + message + "\n" + s1 + line + "\n" + s2 + "\n";
+    str = "\nParsing error: " + message + "\n" + s1 + line + "\n" + s2 + '\n';
 
     eIndex = endIndex;
     sIndex = startIndex;

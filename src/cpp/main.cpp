@@ -13,13 +13,11 @@
 #include "../include/Token.h"
 #include "../include/LexError.h"
 #include "../include/ErrorScan.h"
-#include "../include/HelpText.h"
 
 void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head);
 
 std::vector<Token> tokens;
 
-bool hadError = false;
 int rLine = 1;
 
 void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head) {
@@ -30,7 +28,6 @@ void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner,
     } catch (LexError error) {
         std::cout << "In file " << file;
         std::cout << error.getMessage();
-        hadError = true;
         return;
     }
 
@@ -43,7 +40,6 @@ void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner,
         tokens.clear();
         std::cout << "In file " << file;
         std::cout << error.getMessage();
-        hadError = true;
         return;
     }
 
@@ -59,7 +55,7 @@ void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, 
         std::cout << ">>>";
         std::getline(std::cin, txt);
         if (txt == "help") {
-            std::cout << helpText;
+            std::cout << StringConstants::helpText;
         } else if (txt.substr(0, 3) == std::string("save").substr(0, 3)) {
             std::string filename = txt.substr(5, txt.size() - 2);
             if (txt.size() < 6) {
@@ -95,7 +91,7 @@ void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::uniq
     std::string sLines;
 
     if (!file.is_open()) {
-        std::cout << "Comand-line Error: File '" + std::string(args[1]) + "' cannot open.\n" << std::strerror(errno) << std::endl;;
+        std::cout << "Comand-line Error: Cannot open file '" + std::string(args[1]) + "'.\n" << std::strerror(errno) << std::endl;;
         file.close();
         exit(FILE_NOT_OPEN);
     }

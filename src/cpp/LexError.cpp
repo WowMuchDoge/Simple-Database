@@ -13,7 +13,8 @@ LexError::LexError(std::string message, int lineNumber, int sIndex, int eIndex, 
         s1 += " ";
     }
     std::string s2;
-    for (int i = 0; i <= sIndex + 11; i++) {
+    s2 += "       |   ";
+    for (int i = 0; i <= sIndex; i++) {
         s2.append(" ");
     }
     s2.append("^");
