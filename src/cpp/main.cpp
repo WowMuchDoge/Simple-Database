@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <cstring>
-#include <cstring>
 #include <memory>
 
 #include "../include/ColumnHead.h"
@@ -15,18 +14,15 @@
 #include "../include/ErrorScan.h"
 #include "../include/HelpText.h"
 
-void runFile(int argc, char** args);
+void runFile(int argc, char** args, Scanner scanner, Parser parser);
 
 std::vector<Token> tokens;
 TableHead head;
 
-Scanner scanner("");
-Parser parser(tokens, &head);
-
 bool hadError = false;
 int rLine = 1;
 
-void run(std::string input, std::string file) {
+void run(std::string input, std::string file, Scanner scanner, Parser parser) {
     scanner.setText(input);
     scanner.setLines();
 
@@ -61,7 +57,7 @@ void run(std::string input, std::string file) {
     parser.parse();
 }
 
-void runCLI() {
+void runCLI(Scanner scanner, Parser parser) {
     std::cout << "You have now entered command line mode\nType " << '"' << "help" << '"' << " for more information\n";
     while (true) {
         std::string txt;
@@ -87,19 +83,19 @@ void runCLI() {
             const char** list = (const char**)malloc(2 * sizeof(char*));
             list[0] = "";
             list[1] = filename.c_str();
-            runFile(2, (char**)list);
+            runFile(2, (char**)list, scanner, parser);
         } else if (txt == "exit") {
             break;
         } else if (txt == "\0") {
             std::cout << '\n';
             break;    
         } else {
-            run(txt, "<stdin>");
+            run(txt, "<stdin>", scanner, parser);
         }
     }
 }
 
-void runFile(int argc, char** args) {
+void runFile(int argc, char** args, Scanner scanner, Parser parser) {
 
     if (argc > 2) {
         std::cout << "Comand-line Error: Too many arguments provided.\n";
@@ -120,7 +116,7 @@ void runFile(int argc, char** args) {
     }
 
     while (std::getline(file, line)) {
-        run(line, "'" + std::string(args[1]) + "'");
+        run(line, "'" + std::string(args[1]) + "'", scanner, parser);
         rLine++;
     }
 
@@ -130,24 +126,13 @@ void runFile(int argc, char** args) {
 }
 
 int main(int argc, char** argv) {
+    Scanner scanner("");
+    Parser parser(tokens, &head);
     if (argc == 1) {
-        runCLI();
+        runCLI(scanner, parser);
     } else if (argc == 2) {
-        runFile(argc, argv);
+        runFile(argc, argv, scanner, parser);
     } else {
         exit(1);
     }
 }
-
-// int main() {
-//     LexError error("Unknown identifier 'ADS_COLUMN'", 1, 0, 9, "ADS_COLUMN(poggers 'double')");
-//     Scanner scanner("sdifj(sjfd, sfkj)");
-//     try {
-//         std::vector<Token> tokens = scanner.scanTokens();
-//     } catch (LexError error) {
-//         std::cout << error.getMessage();
-//         break;
-//     }
-
-//     std::cout << tokens[0].type << '\n';
-// }scanner.scanTokens
