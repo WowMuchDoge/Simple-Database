@@ -5,6 +5,7 @@
 #include <cstring>
 #include <memory>
 
+#include "../include/Constants.h"
 #include "../include/ColumnHead.h"
 #include "../include/TableHead.h"
 #include "../include/Scanner.h"
@@ -89,15 +90,6 @@ void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, 
 }
 
 void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head) {
-
-    if (argc > 2) {
-        std::cout << "Comand-line Error: Too many arguments provided.\n";
-        exit(54);
-    } else if (argc < 2) {
-        std::cout << "Comand-line Error: Too few arguments provided.\n";
-        exit(55);
-    }
-
     std::ifstream file(args[1]);
     std::string line;
     std::string sLines;
@@ -105,7 +97,7 @@ void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::uniq
     if (!file.is_open()) {
         std::cout << "Comand-line Error: File '" + std::string(args[1]) + "' cannot open.\n" << std::strerror(errno) << std::endl;;
         file.close();
-        exit(56);
+        exit(FILE_NOT_OPEN);
     }
 
     while (std::getline(file, line)) {
@@ -124,7 +116,8 @@ int main(int argc, char** argv) {
         runCLI(scanner, parser, head);
     } else if (argc == 2) {
         runFile(argc, argv, scanner, parser, head);
-    } else {
-        exit(1);
+    } else if (argc > 2) {
+        std::cout << "Comand-line Error: Too many arguments provided.\n";
+        exit(MANY_ARGS);
     }
 }

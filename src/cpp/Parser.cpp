@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 
+#include "../include/Constants.h"
 #include "../include/Parser.h"
 
 Token Parser::peek() {
@@ -51,7 +52,7 @@ void Parser::addRow() {
             } else if (tkn.type == FALSE) {
                 ((ColumnHead<bool>*)(head->columns[i]))->addElement(false);
             } else {
-                exit(1);
+                exit(UNKOWN_TYPE);
             }
         }
         i++;
@@ -78,7 +79,7 @@ void Parser::editRow() {
             } else if (tkn.type == FALSE) {
                 ((ColumnHead<bool>*)(head->columns[i]))->editElement(false, index);
             } else {
-                exit(1);
+                exit(UNKOWN_TYPE);
             }
         }
         i++;
@@ -127,7 +128,7 @@ void Parser::parse() {
             case END_OF_TEXT: break;
             case EDIT_ROW: editRow(); break;
             default:
-                exit(1);
+                exit(UNKOWN_METHOD);
                 break;
         }
     }

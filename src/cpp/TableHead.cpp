@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include "../include/Constants.h"
 #include "../include/TableHead.h"
 #include "../include/BaseColumn.h"
 #include "../include/TokenType.h"
@@ -15,7 +16,7 @@ void TableHead::addColumn(TokenType type, std::string name) {
         case DOUBLE: columns.push_back(new ColumnHead<double>(name)); break;
         case BOOL: columns.push_back(new ColumnHead<bool>(name)); break;
         default:
-            exit(1);
+            exit(UNKOWN_TYPE);
     }
 }
 
@@ -90,7 +91,7 @@ void TableHead::writeToFile(std::string fileName) {
                 file << "ADD_COLUMN(BOOL " << column->getName() << ")";
             } else {
                 file.close();
-                exit(1);
+                exit(UNKOWN_TYPE);
             }
         file << " ";
     }
@@ -114,7 +115,7 @@ void TableHead::writeToFile(std::string fileName) {
                 }
             } else {
                 file.close();
-                exit(1);
+                exit(UNKOWN_TYPE);
             }
             j++;
         }

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 
+#include "Constants.h"
 #include "BaseColumn.h"
 
 template<class T>
@@ -12,17 +13,6 @@ class ColumnHead : public BaseColumn {
 
         std::string name;
 
-        void* reallocate(size_t oldCapacity, size_t newCapacity, T* elements) {
-            if (newCapacity > 0) {
-                void* result = realloc(elements, newCapacity);
-                if (result == NULL) exit(1);
-                return result;
-            }
-
-            free(elements);
-            return NULL;
-        }
-
     public:
         ColumnHead(std::string nm) : name(nm) {}
 
@@ -31,7 +21,7 @@ class ColumnHead : public BaseColumn {
         }
 
         void editElement(T val, int index) {
-            if (index >= elements.size()) exit(1);
+            if (index >= elements.size()) exit(OUT_OF_RANGE);
 
             elements[index] = val;
         }
