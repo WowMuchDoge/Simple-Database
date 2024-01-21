@@ -14,7 +14,7 @@
 #include "../include/ErrorScan.h"
 #include "../include/HelpText.h"
 
-void runFile(int argc, char** args, Scanner scanner, Parser parser);
+void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser);
 
 std::vector<Token> tokens;
 TableHead head;
@@ -22,12 +22,12 @@ TableHead head;
 bool hadError = false;
 int rLine = 1;
 
-void run(std::string input, std::string file, Scanner scanner, Parser parser) {
-    scanner.setText(input);
-    scanner.setLines();
+void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser) {
+    scanner->setText(input);
+    scanner->setLines();
 
     try {
-        tokens = scanner.scanTokens("<stdin>", rLine);
+        tokens = scanner->scanTokens("<stdin>", rLine);
     } catch (LexError error) {
         std::cout << "In file " << file;
         std::cout << error.getMessage();
@@ -52,12 +52,12 @@ void run(std::string input, std::string file, Scanner scanner, Parser parser) {
         return;
     }
 
-    parser.setInput(tokens);
+    parser->setInput(tokens);
     tokens.clear();
-    parser.parse();
+    parser->parse();
 }
 
-void runCLI(Scanner scanner, Parser parser) {
+void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser) {
     std::cout << "You have now entered command line mode\nType " << '"' << "help" << '"' << " for more information\n";
     while (true) {
         std::string txt;
@@ -84,6 +84,7 @@ void runCLI(Scanner scanner, Parser parser) {
             list[0] = "";
             list[1] = filename.c_str();
             runFile(2, (char**)list, scanner, parser);
+            free(list);
         } else if (txt == "exit") {
             break;
         } else if (txt == "\0") {
@@ -95,7 +96,7 @@ void runCLI(Scanner scanner, Parser parser) {
     }
 }
 
-void runFile(int argc, char** args, Scanner scanner, Parser parser) {
+void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser) {
 
     if (argc > 2) {
         std::cout << "Comand-line Error: Too many arguments provided.\n";
@@ -126,8 +127,8 @@ void runFile(int argc, char** args, Scanner scanner, Parser parser) {
 }
 
 int main(int argc, char** argv) {
-    Scanner scanner("");
-    Parser parser(tokens, &head);
+    std::unique_ptr<Scanner> scanner = std::make_unique<Scanner>("");
+    std::unique_ptr<Parser> parser = std::make_unique<Parser>(tokens, &head);
     if (argc == 1) {
         runCLI(scanner, parser);
     } else if (argc == 2) {
