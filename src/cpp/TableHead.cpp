@@ -77,8 +77,8 @@ BaseColumn* TableHead::getColumn(std::string colName) {
     return NULL;
 }
 
-void TableHead::writeToFile() {
-    std::ofstream file("database.txt");
+void TableHead::writeToFile(std::string fileName) {
+    std::ofstream file(fileName);
     for (BaseColumn* column : columns) {
             if (column->getTypeName() == "i") {
                 file << "ADD_COLUMN(INT " << column->getName() << ")";
@@ -89,9 +89,9 @@ void TableHead::writeToFile() {
             } else if (column->getTypeName() == "b") {
                 file << "ADD_COLUMN(BOOL " << column->getName() << ")";
             } else {
+                file.close();
                 exit(1);
             }
-        // file << column->getTypeName() << " " << column->getName() << " | ";
         file << " ";
     }
     file << '\n';
@@ -103,7 +103,7 @@ void TableHead::writeToFile() {
             if (column->getTypeName() == "i") {
                 file << ((ColumnHead<int>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
             } else if (column->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
-                file << '"' << ((ColumnHead<std::string>*)column)->getElement(i) << '"' << (j == columns.size() - 1 ? "" : " ");
+                file << ((ColumnHead<std::string>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
             } else if (column->getTypeName() == "d") {
                 file << ((ColumnHead<double>*)column)->getElement(i) << (j == columns.size() - 1 ? "" : " ");
             } else if (column->getTypeName() == "b") {
@@ -113,6 +113,7 @@ void TableHead::writeToFile() {
                     file << "FALSE" << (j == columns.size() - 1 ? "" : " ");
                 }
             } else {
+                file.close();
                 exit(1);
             }
             j++;

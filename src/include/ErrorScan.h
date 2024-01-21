@@ -14,7 +14,7 @@
 
 class ErrorScan {
     public:
-        ErrorScan(std::vector<Token> tkns, TableHead* hd, std::vector<std::string> lns);
+        ErrorScan(std::vector<Token> tkns, TableHead* hd, std::string ln);
         void checkTokens();
     private:
         std::vector<Token> tokens;
@@ -37,5 +37,5 @@ class ErrorScan {
 
         void consume(TokenType type, std::string msg);
 
-        std::vector<std::string> lines;
+        std::string line;
 };

@@ -29,7 +29,6 @@ class TableHead {
         ColumnHead<char>* getCharColumn(int col);
         ColumnHead<bool>* getBoolColumn(int col);
 
-        void writeToFile();
-
+        void writeToFile(std::string fileName);
         std::vector<BaseColumn*> columns;
 };
