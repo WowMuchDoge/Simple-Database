@@ -38,7 +38,7 @@ void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner,
         eScan.checkTokens();
     } catch (ParseError error) {
         tokens.clear();
-        std::cout << BOLD + "In file " << file;
+        std::cout << "In file " << file;
         std::cout << error.getMessage();
         return;
     }
