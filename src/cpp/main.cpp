@@ -14,6 +14,15 @@
 #include "../include/LexError.h"
 #include "../include/ErrorScan.h"
 
+#ifdef _WIN32
+#define ERROR_FILE(filename) \
+    std::cout << "In file" << filename;
+#endif
+#ifndef _WIN32
+#define ERROR_FILE(filename) \
+    std::cout << BOLD + "In file " << filename + WHITE;
+#endif
+
 void runFile(int argc, char** args, std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, std::unique_ptr<TableHead>& head);
 
 std::vector<Token> tokens;
@@ -26,7 +35,7 @@ void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner,
     try {
         tokens = scanner->scanTokens(rLine);
     } catch (LexError error) {
-        std::cout << "In file " << file;
+        ERROR_FILE(file);
         std::cout << error.getMessage();
         return;
     }
@@ -38,7 +47,7 @@ void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner,
         eScan.checkTokens();
     } catch (ParseError error) {
         tokens.clear();
-        std::cout << "In file " << file;
+        ERROR_FILE(file);
         std::cout << error.getMessage();
         return;
     }
