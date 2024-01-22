@@ -25,6 +25,7 @@ If you run the binary file without any arguments, you will be defaulted into a R
 - **EDIT_ROW(&lt;index&gt;, &lt;element&gt;...):** Specify the index of the row in which you would like to edit, and then (similar to the `ADD_ROW()` method), enter in the elements you would like to replace the row with. For example, `EDIT_ROW(0 FALSE 823)`. Ensure that the index is not out of range or it will through an error and that the number of arguments matches the number of columns, similar to the `ADD_ROW()` method.
 - **REMOVE_COLUMN("&lt;name&gt;"):** Removes column at specified index. Make sure the name is the actual name of a column or it will error (hopefully).
 - **EDIT_ELEMENT("&lt;name&gt;" &lt;index&gt;):** Edit an element at the specified column and row index, for example `EDIT_ELEMENT("int_col" 0 823)`. Ensure the column name exists and the row index is within range.
+- **EDIT_COLNAME("&lt;name to change&gt;", "&lt;changed name&gt;")** Change the name of a column by specifying the name of the column to be changed and the changed name.
 - **REMOVE_ROW(&lt;index&gt;):** Removes a row based on the specified index. Similar to the `REMOVE_COLUMN()` method, make sure the index does not exceed the number of rows you have minus one, or else it will throw an error.
 
 That is all the database methods for directly interacting with the table, I know it is fairly limited but eventually, I might get back and add more for editing specific elements and such, but for now, this is really all you need to manipulate a table.
