@@ -149,6 +149,48 @@ void ErrorScan::removeRow() {
     consume(RIGHT_PAREN, "Expected ')', got '" + peek().value + "' instead.");
 }
 
+void ErrorScan::editElement() {
+    consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
+
+    int col;
+    int row;
+
+    if (advance().type != INT_TYPE) {
+        throw ParseError(previous(), "Expected index, got '" + previous().value + "' instead.", line);
+    } else if (std::stoi(previous().value) >= head->columns.size()) {
+        throw ParseError(previous(), "Index '" + previous().value + "' out of range.", line);
+    } else {
+        col = std::stoi(previous().value);
+    }
+
+    if (advance().type != INT_TYPE) {
+        throw ParseError(previous(), "Expected index, got '" + previous().value + "' instead.", line);
+    } else if (std::stoi(previous().value) >= head->columns[0]->rowLen()) {
+        throw ParseError(previous(), "Index '" + previous().value + "' out of range.", line);
+    } else {
+        row = std::stoi(previous().value);
+    }
+
+    if (head->columns[row]->getTypeName() == "i") {
+        if (advance().type != INT_TYPE) {
+            throw ParseError(previous(), "Expected type 'INT', got '" + getTypeString(previous().type) + "' instead.", line);
+        }
+    } else if (head->columns[row]->getTypeName() == "d") {
+        if (advance().type != DOUBLE_TYPE) {
+            throw ParseError(previous(), "Expected type 'DOUBLE', got '" + getTypeString(previous().type) + "' instead.", line);
+        }
+    } else if (head->columns[row]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+        if (advance().type != LITERAL) {
+            throw ParseError(previous(), "Expected type 'STRING', got '" + getTypeString(previous().type) + "' instead.", line);
+        }        
+    } else if (head->columns[row]->getTypeName() == "b") {
+        if (advance().type != BOOL) {
+            throw ParseError(previous(), "Expected type 'DOUBLE', got '" + getTypeString(previous().type) + "' instead.", line);
+        }        
+    }
+    consume(RIGHT_PAREN, "Expected ')', got '" + peek().value + "' instead.");    
+}
+
 void ErrorScan::checkTokens() {
     current = 0;
     while (!isAtEnd()) {
@@ -159,7 +201,7 @@ void ErrorScan::checkTokens() {
             case EDIT_ROW: editRow(); break;
             case REMOVE_COLUMN: removeColumn(); break;
             case REMOVE_ROW: removeRow(); break;
-            case EDIT_ELEMENT: advance(); advance(); advance(); advance(); advance(); break;
+            case EDIT_ELEMENT: editElement(); break;
             default:
                 throw ParseError(previous(), "Expected method, got '" + previous().value + "' instead.", line);
         }

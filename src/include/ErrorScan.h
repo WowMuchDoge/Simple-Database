@@ -32,6 +32,7 @@ class ErrorScan {
         void getElement();
 
         void editRow();
+        void editElement();
         void removeColumn();
         void removeRow();
 
