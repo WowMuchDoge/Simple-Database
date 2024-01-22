@@ -85,6 +85,12 @@ void runCLI(std::unique_ptr<Scanner>& scanner, std::unique_ptr<Parser>& parser, 
             free(list);
         } else if (txt == "exit") {
             break;
+        } else if (txt.substr(0, 5) == "clear") {
+            if (txt.substr(6, txt.size() - 2) == "rows") {
+                head->clearRows();
+            } else if (txt.substr(6, txt.size() - 2) == "columns") {
+                head->columns.clear();
+            }
         } else if (txt == "\0") {
             std::cout << '\n';
             break;    
