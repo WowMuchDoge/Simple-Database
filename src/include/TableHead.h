@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "BaseColumn.h"
 #include "ColumnHead.h"
@@ -23,12 +24,6 @@ class TableHead {
         BaseColumn* getColumn(std::string colName);
         std::string getColumnType(int col);
 
-        ColumnHead<int>* getIntColumn(int col);
-        ColumnHead<std::string>* getStringColumn(int col);
-        ColumnHead<double>* getDoubleColumn(int col);
-        ColumnHead<char>* getCharColumn(int col);
-        ColumnHead<bool>* getBoolColumn(int col);
-
         void writeToFile(std::string fileName);
-        std::vector<BaseColumn*> columns;
+        std::vector<std::unique_ptr<BaseColumn>> columns;
 };

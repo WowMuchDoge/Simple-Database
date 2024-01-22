@@ -41,16 +41,16 @@ void Parser::addRow() {
     TokenType type;
     while ((tkn = advance()).type != RIGHT_PAREN) {
         if (head->columns[i]->getTypeName() == "i") {
-            ((ColumnHead<int>*)(head->columns[i]))->addElement(std::stoi(tkn.value));
+            ((ColumnHead<int>*)(head->columns[i].get()))->addElement(std::stoi(tkn.value));
         } else if (head->columns[i]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
-            ((ColumnHead<std::string>*)(head->columns[i]))->addElement(tkn.value);
+            ((ColumnHead<std::string>*)(head->columns[i].get()))->addElement(tkn.value);
         } else if (head->columns[i]->getTypeName() == "d") {
-            ((ColumnHead<double>*)(head->columns[i]))->addElement(std::stod(tkn.value));
+            ((ColumnHead<double>*)(head->columns[i].get()))->addElement(std::stod(tkn.value));
         } else if (head->columns[i]->getTypeName() == "b") {
             if (tkn.type == TRUE) {
-                ((ColumnHead<bool>*)(head->columns[i]))->addElement(true);
+                ((ColumnHead<bool>*)(head->columns[i].get()))->addElement(true);
             } else if (tkn.type == FALSE) {
-                ((ColumnHead<bool>*)(head->columns[i]))->addElement(false);
+                ((ColumnHead<bool>*)(head->columns[i].get()))->addElement(false);
             } else {
                 exit(UNKOWN_TYPE);
             }
@@ -68,16 +68,16 @@ void Parser::editRow() {
     TokenType type;
     while ((tkn = advance()).type != RIGHT_PAREN) {
         if (head->columns[i]->getTypeName() == "i") {
-            ((ColumnHead<int>*)(head->columns[i]))->editElement(std::stoi(tkn.value), index);
+            ((ColumnHead<int>*)(head->columns[i].get()))->editElement(std::stoi(tkn.value), index);
         } else if (head->columns[i]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
-            ((ColumnHead<std::string>*)(head->columns[i]))->editElement(tkn.value, index);
+            ((ColumnHead<std::string>*)(head->columns[i].get()))->editElement(tkn.value, index);
         } else if (head->columns[i]->getTypeName() == "d") {
-            ((ColumnHead<double>*)(head->columns[i]))->editElement(std::stod(tkn.value), index);
+            ((ColumnHead<double>*)(head->columns[i].get()))->editElement(std::stod(tkn.value), index);
         } else if (head->columns[i]->getTypeName() == "b") {
             if (tkn.type == TRUE) {
-                ((ColumnHead<bool>*)(head->columns[i]))->editElement(true, index);
+                ((ColumnHead<bool>*)(head->columns[i].get()))->editElement(true, index);
             } else if (tkn.type == FALSE) {
-                ((ColumnHead<bool>*)(head->columns[i]))->editElement(false, index);
+                ((ColumnHead<bool>*)(head->columns[i].get()))->editElement(false, index);
             } else {
                 exit(UNKOWN_TYPE);
             }
@@ -109,8 +109,8 @@ void Parser::removeRow() {
     advance(); // Add error handling to ensure that this consumes a parenthesis
     int row = std::stoi(advance().value);
 
-    for (BaseColumn* column : head->columns) {
-        column->removeElement(row);
+    for (int i = 0; i < head->columns.size(); i++) {
+        head->columns[i]->removeElement(row);
     }
 
     advance();
