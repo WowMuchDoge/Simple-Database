@@ -26,7 +26,7 @@ void run(std::string input, std::string file, std::unique_ptr<Scanner>& scanner,
     try {
         tokens = scanner->scanTokens(rLine);
     } catch (LexError error) {
-        std::cout << BOLD + "In file " << file + WHITE;
+        std::cout << "In file " << file;
         std::cout << error.getMessage();
         return;
     }
