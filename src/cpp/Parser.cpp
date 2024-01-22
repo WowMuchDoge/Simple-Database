@@ -116,6 +116,29 @@ void Parser::removeRow() {
     advance();
 }
 
+void Parser::editElement() {
+    advance();
+    int col = std::stoi(advance().value);
+    int row = std::stoi(advance().value);
+
+    if (head->columns[col]->getTypeName() == "i") {
+        ((ColumnHead<int>*)(head->columns[col].get()))->editElement(std::stoi(advance().value), row);
+    } else if (head->columns[col]->getTypeName() == "d") {
+        ((ColumnHead<double>*)(head->columns[col].get()))->editElement(std::stod(advance().value), row);
+    } else if (head->columns[col]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+        ((ColumnHead<std::string>*)(head->columns[col].get()))->editElement(advance().value, row);
+    } else if (head->columns[col]->getTypeName() == "b") {
+        if (advance().value == "TRUE") {
+            ((ColumnHead<bool>*)(head->columns[col].get()))->editElement(true, row);
+        } else if (advance().value == "FALSE") {
+            ((ColumnHead<bool>*)(head->columns[col].get()))->editElement(false, row);
+        } else {
+            exit(UNKOWN_TYPE);
+        }
+    }
+    advance();
+}
+
 void Parser::parse() {
     current = 0;
     while (!isAtEnd()) {
@@ -127,7 +150,9 @@ void Parser::parse() {
             case REMOVE_ROW: removeRow(); break;
             case END_OF_TEXT: break;
             case EDIT_ROW: editRow(); break;
+            case EDIT_ELEMENT: editElement(); break;
             default:
+                std::cout << previous().value << '\n';
                 exit(UNKOWN_METHOD);
                 break;
         }

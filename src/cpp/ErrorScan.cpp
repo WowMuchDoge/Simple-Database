@@ -159,6 +159,7 @@ void ErrorScan::checkTokens() {
             case EDIT_ROW: editRow(); break;
             case REMOVE_COLUMN: removeColumn(); break;
             case REMOVE_ROW: removeRow(); break;
+            case EDIT_ELEMENT: advance(); advance(); advance(); advance(); advance(); break;
             default:
                 throw ParseError(previous(), "Expected method, got '" + previous().value + "' instead.", line);
         }

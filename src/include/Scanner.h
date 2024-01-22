@@ -40,6 +40,7 @@ class Scanner {
             keywords["REMOVE_COLUMN"] = REMOVE_COLUMN;
             keywords["REMOVE_ROW"] = REMOVE_ROW;
             keywords["EDIT_ROW"] = EDIT_ROW;
+            keywords["EDIT_ELEMENT"] = EDIT_ELEMENT;
         }
 
         std::vector<Token> scanTokens(int line);
