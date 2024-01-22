@@ -20,6 +20,8 @@ class TableHead {
         void addRow();
         void clearRows();
 
+        int getColIndexFromName(std::string name);
+
         BaseColumn* getColumn(int col);
         BaseColumn* getColumn(std::string colName);
         std::string getColumnType(int col);

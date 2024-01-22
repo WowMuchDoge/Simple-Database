@@ -99,7 +99,7 @@ void Parser::getElement() {
 void Parser::removeColumn() {
     advance(); // Add error handling to ensure that this consumes a parenthesis
 
-    int col = std::stoi(advance().value);
+    int col = head->getColIndexFromName(advance().value);
     head->columns.erase(head->columns.begin() + col);
 
     advance();
@@ -118,20 +118,22 @@ void Parser::removeRow() {
 
 void Parser::editElement() {
     advance();
-    int col = std::stoi(advance().value);
+    std::string col = advance().value;
     int row = std::stoi(advance().value);
 
-    if (head->columns[col]->getTypeName() == "i") {
-        ((ColumnHead<int>*)(head->columns[col].get()))->editElement(std::stoi(advance().value), row);
-    } else if (head->columns[col]->getTypeName() == "d") {
-        ((ColumnHead<double>*)(head->columns[col].get()))->editElement(std::stod(advance().value), row);
-    } else if (head->columns[col]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
-        ((ColumnHead<std::string>*)(head->columns[col].get()))->editElement(advance().value, row);
-    } else if (head->columns[col]->getTypeName() == "b") {
+    BaseColumn *bCol = head->getColumn(col);
+
+    if (bCol->getTypeName() == "i") {
+        ((ColumnHead<int>*)(bCol))->editElement(std::stoi(advance().value), row);
+    } else if (bCol->getTypeName() == "d") {
+        ((ColumnHead<double>*)(bCol))->editElement(std::stod(advance().value), row);
+    } else if (bCol->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+        ((ColumnHead<std::string>*)(bCol))->editElement(advance().value, row);
+    } else if (bCol->getTypeName() == "b") {
         if (advance().value == "TRUE") {
-            ((ColumnHead<bool>*)(head->columns[col].get()))->editElement(true, row);
+            ((ColumnHead<bool>*)(bCol))->editElement(true, row);
         } else if (advance().value == "FALSE") {
-            ((ColumnHead<bool>*)(head->columns[col].get()))->editElement(false, row);
+            ((ColumnHead<bool>*)(bCol))->editElement(false, row);
         } else {
             exit(UNKOWN_TYPE);
         }

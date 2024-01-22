@@ -46,6 +46,15 @@ void TableHead::clearRows() {
     }
 }
 
+int TableHead::getColIndexFromName(std::string name) {
+    for (int i = 0; i < columns.size(); i++) {
+        if (columns[i]->getName() == name) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void TableHead::writeToFile(std::string fileName) {
     std::ofstream file(fileName);
     if (columns.size() > 0) {

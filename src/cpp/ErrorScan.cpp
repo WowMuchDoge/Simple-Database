@@ -126,11 +126,10 @@ void ErrorScan::editRow() {
 void ErrorScan::removeColumn() {
     consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
 
-    if (advance().type != INT_TYPE) {
-        throw ParseError(previous(), "Expected index, got '" + previous().value + "' instead.", line);
-    }
-    if (std::stoi(previous().value) >= head->columns.size()) {
-        throw ParseError(previous(), "Index '" + previous().value + "' out of range.", line);
+    if (advance().type != LITERAL) {
+        throw ParseError(previous(), "Expected a name, got '" + previous().value + "' instead.", line);
+    } else if (head->getColumn(previous().value) == NULL) {
+        throw ParseError(previous(), "Column '" + previous().value + "' not in table.", line);
     }
 
     consume(RIGHT_PAREN, "Expected ')', got '" + peek().value + "' instead.");
@@ -152,38 +151,40 @@ void ErrorScan::removeRow() {
 void ErrorScan::editElement() {
     consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
 
-    int col;
+    std::string col;
     int row;
 
-    if (advance().type != INT_TYPE) {
-        throw ParseError(previous(), "Expected index, got '" + previous().value + "' instead.", line);
-    } else if (std::stoi(previous().value) >= head->columns.size()) {
-        throw ParseError(previous(), "Index '" + previous().value + "' out of range.", line);
+    BaseColumn* bCol;
+
+    if (advance().type != LITERAL) {
+        throw ParseError(previous(), "Expected a name, got '" + previous().value + "' instead.", line);
+    } else if (head->getColumn(previous().value) == NULL) {
+        throw ParseError(previous(), "Column '" + previous().value + "' not in table.", line);
     } else {
-        col = std::stoi(previous().value);
+        bCol = head->getColumn(previous().value);
     }
 
     if (advance().type != INT_TYPE) {
         throw ParseError(previous(), "Expected index, got '" + previous().value + "' instead.", line);
     } else if (std::stoi(previous().value) >= head->columns[0]->rowLen()) {
-        throw ParseError(previous(), "Index '" + previous().value + "' out of range.", line);
+        throw ParseError(previous(), "Row index '" + previous().value + "' out of range.", line);
     } else {
         row = std::stoi(previous().value);
     }
 
-    if (head->columns[row]->getTypeName() == "i") {
+    if (bCol->getTypeName() == "i") {
         if (advance().type != INT_TYPE) {
             throw ParseError(previous(), "Expected type 'INT', got '" + getTypeString(previous().type) + "' instead.", line);
         }
-    } else if (head->columns[row]->getTypeName() == "d") {
+    } else if (bCol->getTypeName() == "d") {
         if (advance().type != DOUBLE_TYPE) {
             throw ParseError(previous(), "Expected type 'DOUBLE', got '" + getTypeString(previous().type) + "' instead.", line);
         }
-    } else if (head->columns[row]->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+    } else if (bCol->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
         if (advance().type != LITERAL) {
             throw ParseError(previous(), "Expected type 'STRING', got '" + getTypeString(previous().type) + "' instead.", line);
         }        
-    } else if (head->columns[row]->getTypeName() == "b") {
+    } else if (bCol->getTypeName() == "b") {
         if (advance().type != BOOL) {
             throw ParseError(previous(), "Expected type 'DOUBLE', got '" + getTypeString(previous().type) + "' instead.", line);
         }        
