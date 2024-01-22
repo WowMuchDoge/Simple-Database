@@ -1,1 +1,0 @@
-g++ src/cpp/*.cpp -o ./out
