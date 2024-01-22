@@ -4,7 +4,7 @@ SOURCES := src/cpp/ParseError.cpp src/cpp/LexError.cpp src/cpp/TableHead.cpp src
 TARGET := simple-database
 
 $(TARGET) : $(SOURCES)
-	CXX $(SOURCES) $(CPPFLAGS) -o $(TARGET)
+	$(CXX) $(SOURCES) $(CPPFLAGS) -o $(TARGET)
 
 clean:
 	rm -f $(TARGET)
