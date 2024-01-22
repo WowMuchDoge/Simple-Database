@@ -37,7 +37,7 @@ While you are in the sort of pseudo-REPL, you can execute commands. Now this doe
 - **save &lt;filename&gt;:** Running this will save the current state in a text file. The program does this by writing database methods to a text file that will if run, bring the program to the exact state it was in when you ran the command.
 - **load &lt;filename&gt;:** Runs the commands within a text file, it will not delete the state you are currently in but add to it the commands that are within that text file.
 
-## Exit Codes
+### Exit Codes
 There are a few place in this code that use the `exit()` function to quit the program instead of throwing an exception. These do not throw an exception because they should be impossible to reach with the program's control flow, but if somehow you trick my dumb error handler it will exit with one of the codes below.
 
 - **Exit Code 10:** Somewhere in the program you provided too few args and the program didn't catch it.
