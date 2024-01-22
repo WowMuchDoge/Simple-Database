@@ -32,8 +32,10 @@ class ErrorScan {
         void getElement();
 
         void editRow();
+        void editElement();
         void removeColumn();
         void removeRow();
+        void editColName();
 
         void consume(TokenType type, std::string msg);
 

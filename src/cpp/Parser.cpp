@@ -99,7 +99,7 @@ void Parser::getElement() {
 void Parser::removeColumn() {
     advance(); // Add error handling to ensure that this consumes a parenthesis
 
-    int col = std::stoi(advance().value);
+    int col = head->getColIndexFromName(advance().value);
     head->columns.erase(head->columns.begin() + col);
 
     advance();
@@ -116,6 +116,38 @@ void Parser::removeRow() {
     advance();
 }
 
+void Parser::editElement() {
+    advance();
+    std::string col = advance().value;
+    int row = std::stoi(advance().value);
+
+    BaseColumn *bCol = head->getColumn(col);
+
+    if (bCol->getTypeName() == "i") {
+        ((ColumnHead<int>*)(bCol))->editElement(std::stoi(advance().value), row);
+    } else if (bCol->getTypeName() == "d") {
+        ((ColumnHead<double>*)(bCol))->editElement(std::stod(advance().value), row);
+    } else if (bCol->getTypeName() == "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE") {
+        ((ColumnHead<std::string>*)(bCol))->editElement(advance().value, row);
+    } else if (bCol->getTypeName() == "b") {
+        if (advance().value == "TRUE") {
+            ((ColumnHead<bool>*)(bCol))->editElement(true, row);
+        } else if (advance().value == "FALSE") {
+            ((ColumnHead<bool>*)(bCol))->editElement(false, row);
+        } else {
+            exit(UNKOWN_TYPE);
+        }
+    }
+    advance();
+}
+
+void Parser::editColName() {
+    advance();
+    BaseColumn *col = head->getColumn(advance().value);
+    col->setName(advance().value);
+    advance();
+}
+
 void Parser::parse() {
     current = 0;
     while (!isAtEnd()) {
@@ -127,7 +159,10 @@ void Parser::parse() {
             case REMOVE_ROW: removeRow(); break;
             case END_OF_TEXT: break;
             case EDIT_ROW: editRow(); break;
+            case EDIT_ELEMENT: editElement(); break;
+            case EDIT_COLNAME: editColName(); break;
             default:
+                std::cout << previous().value << '\n';
                 exit(UNKOWN_METHOD);
                 break;
         }

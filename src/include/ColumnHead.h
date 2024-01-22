@@ -71,4 +71,8 @@ class ColumnHead : public BaseColumn {
         int rowLen() override {
             return elements.size();
         }
+
+        void setName(std::string n) override {
+            name = n;
+        }
 };

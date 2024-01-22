@@ -23,7 +23,9 @@ If you run the binary file without any arguments, you will be defaulted into a R
 - **ADD_ROW(&lt;element&gt;...):** Specify elements in a new row, for example, if I had a column of type BOOL, and another column after that of type INT, a row method would look like `ADD_ROW(TRUE 328)`. Ensure that you do not provide too many arguments, as the error will state you are missing a parenthesis because that is what the program expects when enough arguments have been provided.
 - **GET_ELEMENT("&lt;name&gt;" &lt;index&gt;):** Specify the name of the column and row index of the element you would like to get, for example: `GET_ELEMENT("int_col" 0)` would print the first element (remember indices start from zero) of column `"int_col"`. Ensure the column exists and the index is not out of range, otherwise it will throw an error.
 - **EDIT_ROW(&lt;index&gt;, &lt;element&gt;...):** Specify the index of the row in which you would like to edit, and then (similar to the `ADD_ROW()` method), enter in the elements you would like to replace the row with. For example, `EDIT_ROW(0 FALSE 823)`. Ensure that the index is not out of range or it will through an error and that the number of arguments matches the number of columns, similar to the `ADD_ROW()` method.
-- **REMOVE_COLUMN(&lt;index&gt;):** Removes column at specified index. I know that this would be better if you removed based on the column name, but here me out: I was lazy. Make sure the index does not exceed the amount of columns you have minus one, as it will through an error (hopefully). 
+- **REMOVE_COLUMN("&lt;name&gt;"):** Removes column at specified index. Make sure the name is the actual name of a column or it will error (hopefully).
+- **EDIT_ELEMENT("&lt;name&gt;" &lt;index&gt;):** Edit an element at the specified column and row index, for example `EDIT_ELEMENT("int_col" 0 823)`. Ensure the column name exists and the row index is within range.
+- **EDIT_COLNAME("&lt;name to change&gt;", "&lt;changed name&gt;")** Change the name of a column by specifying the name of the column to be changed and the changed name.
 - **REMOVE_ROW(&lt;index&gt;):** Removes a row based on the specified index. Similar to the `REMOVE_COLUMN()` method, make sure the index does not exceed the number of rows you have minus one, or else it will throw an error.
 
 That is all the database methods for directly interacting with the table, I know it is fairly limited but eventually, I might get back and add more for editing specific elements and such, but for now, this is really all you need to manipulate a table.
@@ -36,6 +38,8 @@ While you are in the sort of pseudo-REPL, you can execute commands. Now this doe
 - **exit:** Running this just quits out of the `while(true)` loop and exits out of the program.
 - **save &lt;filename&gt;:** Running this will save the current state in a text file. The program does this by writing database methods to a text file that will if run, bring the program to the exact state it was in when you ran the command.
 - **load &lt;filename&gt;:** Runs the commands within a text file, it will not delete the state you are currently in but add to it the commands that are within that text file.
+- **clear rows:** Clears all the rows but keeps columns.
+- **clear columns:** Clears all table state.
 
 ### Exit Codes
 There are a few place in this code that use the `exit()` function to quit the program instead of throwing an exception. These do not throw an exception because they should be impossible to reach with the program's control flow, but if somehow you trick my dumb error handler it will exit with one of the codes below.
