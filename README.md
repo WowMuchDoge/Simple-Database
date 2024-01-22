@@ -37,4 +37,16 @@ While you are in the sort of pseudo-REPL, you can execute commands. Now this doe
 - **save &lt;filename&gt;:** Running this will save the current state in a text file. The program does this by writing database methods to a text file that will if run, bring the program to the exact state it was in when you ran the command.
 - **load &lt;filename&gt;:** Runs the commands within a text file, it will not delete the state you are currently in but add to it the commands that are within that text file.
 
+## Exit Codes
+There are a few place in this code that use the `exit()` function to quit the program instead of throwing an exception. These do not throw an exception because they should be impossible to reach with the program's control flow, but if somehow you trick my dumb error handler it will exit with one of the codes below.
+
+- **Exit Code 10:** Somewhere in the program you provided too few args and the program didn't catch it.
+- **Exit Code 11:** Somewhere in the program you provided too many args and the program didn't catch it.
+- **Exit Code 20:** Somehow a type was given that the program didn't understand.
+- **Exit Code 21:** A method was provided that the program did not understand.
+- **Exit Code 30:** An index was provided that was out of range of an array or vector (hopefully you get this instead of a segmentation fault).
+- **Exit Code 40:** The specified file could not be opened.
+
+While hopefully you will never get one of these errors, there are here if you need them. These should also be useful if you are editting the repository yourself.
+
 This is all there is to the operation of this database, it is dead simple and quite honestly utter garbage. Any actual usage would require creating some sort of API and that is a problem for future me (or maybe future you if you want to fork this repo). Though even if you could use this, it would be stupid to because programs like SQLite exists which are faster and far more feature rich than this ever will be, so have fun screwing around but my word of warning: never actually use this.
