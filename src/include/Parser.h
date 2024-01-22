@@ -24,6 +24,7 @@ class Parser {
         void addRow();
         void editRow();
         void editElement();
+        void editColName();
 
         void removeColumn();
         void removeRow();

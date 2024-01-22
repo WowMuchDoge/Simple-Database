@@ -141,6 +141,13 @@ void Parser::editElement() {
     advance();
 }
 
+void Parser::editColName() {
+    advance();
+    BaseColumn *col = head->getColumn(advance().value);
+    col->setName(advance().value);
+    advance();
+}
+
 void Parser::parse() {
     current = 0;
     while (!isAtEnd()) {
@@ -153,6 +160,7 @@ void Parser::parse() {
             case END_OF_TEXT: break;
             case EDIT_ROW: editRow(); break;
             case EDIT_ELEMENT: editElement(); break;
+            case EDIT_COLNAME: editColName(); break;
             default:
                 std::cout << previous().value << '\n';
                 exit(UNKOWN_METHOD);

@@ -192,6 +192,22 @@ void ErrorScan::editElement() {
     consume(RIGHT_PAREN, "Expected ')', got '" + peek().value + "' instead.");    
 }
 
+void ErrorScan::editColName() {
+    consume(LEFT_PAREN, "Expected '(', got '" + peek().value + "' instead.");
+
+    if (advance().type != LITERAL) {
+        throw ParseError(previous(), "Expected a name, got '" + previous().value + "' instead.", line);
+    } else if (head->getColumn(previous().value) == NULL) {
+        throw ParseError(previous(), "Column '" + previous().value + "' not in table.", line);
+    }
+
+    if (advance().type != LITERAL) {
+        throw ParseError(previous(), "Expected a name, got '" + previous().value + "' instead.", line);
+    }
+
+    consume(RIGHT_PAREN, "Expected ')', got '" + peek().value + "' instead.");    
+}
+
 void ErrorScan::checkTokens() {
     current = 0;
     while (!isAtEnd()) {
@@ -203,6 +219,7 @@ void ErrorScan::checkTokens() {
             case REMOVE_COLUMN: removeColumn(); break;
             case REMOVE_ROW: removeRow(); break;
             case EDIT_ELEMENT: editElement(); break;
+            case EDIT_COLNAME: editColName(); break;
             default:
                 throw ParseError(previous(), "Expected method, got '" + previous().value + "' instead.", line);
         }
